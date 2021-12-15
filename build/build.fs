@@ -399,21 +399,24 @@ let dotnetBuild ctx =
         }) sln
 
 let fsharpAnalyzers _ =
-    let argParser = ArgumentParser.Create<FSharpAnalyzers.Arguments>(programName = "fsharp-analyzers")
-    !! srcGlob
-    |> Seq.iter(fun proj ->
-        let args  =
-            [
-                FSharpAnalyzers.Analyzers_Path (__SOURCE_DIRECTORY__ </> ".." </> "packages/analyzers")
-                FSharpAnalyzers.Arguments.Project proj
-                FSharpAnalyzers.Arguments.Fail_On_Warnings [
-                    "BDH0002"
+    try
+        let argParser = ArgumentParser.Create<FSharpAnalyzers.Arguments>(programName = "fsharp-analyzers")
+        !! srcGlob
+        |> Seq.iter(fun proj ->
+            let args  =
+                [
+                    FSharpAnalyzers.Analyzers_Path (__SOURCE_DIRECTORY__ </> ".." </> "packages/analyzers")
+                    FSharpAnalyzers.Arguments.Project proj
+                    FSharpAnalyzers.Arguments.Fail_On_Warnings [
+                        "BDH0002"
+                    ]
+                    FSharpAnalyzers.Verbose
                 ]
-                FSharpAnalyzers.Verbose
-            ]
-            |> argParser.PrintCommandLineArgumentsFlat
-        dotnet.fsharpAnalyzer id args
-    )
+                |> argParser.PrintCommandLineArgumentsFlat
+            dotnet.fsharpAnalyzer id args
+        )
+    with ex ->
+        eprintfn "Failed to run analyzers, not failing build: %s" ex.Message
 
 let dotnetTest ctx =
     let excludeCoverage =

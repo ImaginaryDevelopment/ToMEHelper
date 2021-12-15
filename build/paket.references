@@ -1,3 +1,4 @@
+Expecto.FsCheck
 group Build
 FSharp.Core
 Fake.IO.FileSystem

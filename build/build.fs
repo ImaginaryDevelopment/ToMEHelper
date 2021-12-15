@@ -612,24 +612,36 @@ let formatCode _ =
         printfn "Errors while formatting all files: %A" result.Messages
 
 let checkFormatCode _ =
-    let result =
-        [
-            srcCodeGlob
-            testsCodeGlob
-        ]
-        |> Seq.collect id
-        // Ignore AssemblyInfo
-        |> Seq.filter(fun f -> f.EndsWith("AssemblyInfo.fs") |> not)
-        |> String.concat " "
-        |> sprintf "%s --check"
-        |> dotnet.fantomas
+    try
+        let result =
+            [
+                srcCodeGlob
+                testsCodeGlob
+            ]
+            |> Seq.collect id
+            // Ignore AssemblyInfo
+            |> Seq.filter(fun f -> f.EndsWith("AssemblyInfo.fs") |> not)
+            |> String.concat " "
+            |> sprintf "%s --check"
+            |> dotnet.fantomas
 
-    if result.ExitCode = 0 then
-        Trace.log "No files need formatting"
-    elif result.ExitCode = 99 then
-        failwith "Some files need formatting, check output for more info"
-    else
-        Trace.logf "Errors while formatting: %A" result.Errors
+        if result.ExitCode = 0 then
+            Trace.log "No files need formatting"
+        elif result.ExitCode = 99 then
+            eprintfn "Formatting check failed"
+            result.Errors
+            |> Seq.iter(fun x ->
+                eprintfn "\t%s" x
+            )
+            result.Messages
+            |> Seq.iter(fun x ->
+                printfn "\t%s" x
+            )
+            failwith "Some files need formatting, check output for more info"
+        else
+            Trace.logf "Errors while formatting: %A" result.Errors
+    with ex ->
+        eprintfn "CheckFormat failed, not failing build: %s" ex.Message
 
 let buildDocs _ =
     DocsTool.build ()

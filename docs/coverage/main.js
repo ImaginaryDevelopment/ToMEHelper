@@ -224,6 +224,8 @@ var assemblies = [
   {
     "name": "ToMEHelper",
     "classes": [
+      { "name": "Schema", "rp": "ToMEHelper_Schema.htm", "cl": 14, "ucl": 1, "cal": 15, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 12, "tb": 15, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.BHelpers", "rp": "ToMEHelper_BHelpers.htm", "cl": 25, "ucl": 5, "cal": 30, "tl": 55, "ct": "LineCoverage", "mc": "-", "cb": 13, "tb": 22, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Say", "rp": "ToMEHelper_Say.htm", "cl": 4, "ucl": 0, "cal": 4, "tl": 53, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
     ]},
 ];

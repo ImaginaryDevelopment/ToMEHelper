@@ -6,7 +6,7 @@ open Expecto.ExpectoFsCheck
 // open ToMEHelper
 open FSharp.Reflection
 
-open Schema
+open ToMEHelper.Schema
 let makeDUAll<'t>() =
     FSharp.Reflection.FSharpType.GetUnionCases(typeof<'t>)
     |> Array.map(fun x -> FSharpValue.MakeUnion(x, Array.empty) :?> 't)

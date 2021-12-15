@@ -224,9 +224,14 @@ var assemblies = [
   {
     "name": "ToMEHelper",
     "classes": [
-      { "name": "Schema", "rp": "ToMEHelper_Schema.htm", "cl": 14, "ucl": 1, "cal": 15, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 12, "tb": 15, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.BHelpers", "rp": "ToMEHelper_BHelpers.htm", "cl": 25, "ucl": 5, "cal": 30, "tl": 55, "ct": "LineCoverage", "mc": "-", "cb": 13, "tb": 22, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Say", "rp": "ToMEHelper_Say.htm", "cl": 4, "ucl": 0, "cal": 4, "tl": 53, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.Aggregation", "rp": "ToMEHelper_Aggregation.htm", "cl": 0, "ucl": 1, "cal": 1, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.Talent", "rp": "ToMEHelper_Talent.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.TalentCategoryType", "rp": "ToMEHelper_TalentCategoryType.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 1, "tb": 2, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.TalentPower", "rp": "ToMEHelper_TalentPower.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.ToMEClass", "rp": "ToMEHelper_ToMEClass.htm", "cl": 8, "ucl": 0, "cal": 8, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 8, "tb": 9, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.ToMERace", "rp": "ToMEHelper_ToMERace.htm", "cl": 3, "ucl": 0, "cal": 3, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 3, "tb": 4, "lch": [], "bch": [], "hc": [] },
     ]},
 ];
 

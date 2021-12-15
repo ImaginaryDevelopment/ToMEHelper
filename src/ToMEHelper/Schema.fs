@@ -1,4 +1,4 @@
-module Schema
+namespace ToMEHelper.Schema
 
 type ToMERace =
     | Cornac

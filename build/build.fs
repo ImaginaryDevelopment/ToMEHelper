@@ -25,6 +25,11 @@ let environVarAsBoolOrDefault varName defaultValue =
     with
     | _ ->  defaultValue
 
+let catchBuildTarget name f x =
+    try
+        f x
+    with ex ->
+        eprintfn "%s failing, force catching. Msg: '%s'" name ex.Message
 //-----------------------------------------------------------------------------
 // Metadata and Configuration
 //-----------------------------------------------------------------------------
@@ -66,7 +71,7 @@ let gitRepoName = "ToMEHelper"
 
 let gitHubRepoUrl = sprintf "https://github.com/%s/%s" gitOwner gitRepoName
 
-let releaseBranch = "main"
+let releaseBranch = "master"
 
 let tagFromVersionNumber versionNumber = sprintf "v%s" versionNumber
 
@@ -398,8 +403,8 @@ let dotnetBuild ctx =
 
         }) sln
 
-let fsharpAnalyzers _ =
-    try
+let fsharpAnalyzers =
+    catchBuildTarget "fsharpAnalyzers" <| fun _ ->
         let argParser = ArgumentParser.Create<FSharpAnalyzers.Arguments>(programName = "fsharp-analyzers")
         !! srcGlob
         |> Seq.iter(fun proj ->
@@ -415,8 +420,6 @@ let fsharpAnalyzers _ =
                 |> argParser.PrintCommandLineArgumentsFlat
             dotnet.fsharpAnalyzer id args
         )
-    with ex ->
-        eprintfn "Failed to run analyzers, not failing build: %s" ex.Message
 
 let dotnetTest ctx =
     let excludeCoverage =
@@ -539,11 +542,12 @@ let dotnetPack ctx =
                 |> DotNet.Options.withAdditionalArgs args
         }) sln
 
-let sourceLinkTest _ =
-    !! distGlob
-    |> Seq.iter (fun nupkg ->
-        dotnet.sourcelink id (sprintf "test %s" nupkg)
-    )
+let sourceLinkTest =
+    catchBuildTarget "sourceLinkTest" <| fun _ ->
+        !! distGlob
+        |> Seq.iter (fun nupkg ->
+            dotnet.sourcelink id (sprintf "test %s" nupkg)
+        )
 
 let publishToNuget _ =
     allReleaseChecks ()
@@ -611,8 +615,8 @@ let formatCode _ =
     if not result.OK then
         printfn "Errors while formatting all files: %A" result.Messages
 
-let checkFormatCode _ =
-    try
+let checkFormatCode =
+    catchBuildTarget "checkFormatCode" <| fun _ ->
         let result =
             [
                 srcCodeGlob
@@ -640,8 +644,6 @@ let checkFormatCode _ =
             failwith "Some files need formatting, check output for more info"
         else
             Trace.logf "Errors while formatting: %A" result.Errors
-    with ex ->
-        eprintfn "CheckFormat failed, not failing build: %s" ex.Message
 
 let buildDocs _ =
     DocsTool.build ()

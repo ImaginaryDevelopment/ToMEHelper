@@ -37,11 +37,85 @@ let uncategorizedTests =
             let expected = [[2];[2;3];[2;3;3];[4;5];[6]]
             let actual = [ 2;2;3;2;3;3;4;5;6] |> chunkBy (fun x -> x % 2 = 0)
             Expect.equal actual expected null
+
+        testList "ValueString" [
+            let vs x = (|ValueString|_|) x
+
+            testCase "null -> None"
+            <| fun _ ->
+                let actual = vs null
+                Expect.isNone actual null
+
+            testCase "'' -> None"
+            <| fun _ ->
+                let actual = vs ""
+                Expect.isNone actual null
+
+            testCase "' ' -> None"
+            <| fun _ ->
+                let actual = vs " "
+                Expect.isNone actual null
+
+            testCase "\\t -> None"
+            <| fun _ ->
+                let actual = vs "\t"
+                Expect.isNone actual null
+
+            testCase "'a' -> Some 'a'"
+            <| fun _ ->
+                let expected = Some "a"
+                let actual = vs "a"
+                Expect.equal actual expected null
+        ]
     ]
 
 [<Tests>]
+let tuple2Tests =
+    testList "Tuple2" [
+        testCase "mapFst can be happy"
+        <| fun _ ->
+            let expected = (2,1)
+            let actual = (1,1) |> Tuple2.mapFst ((+) 1)
+            Expect.equal actual expected null
+        testCase "mapSnd can be happy"
+        <| fun _ ->
+            let expected = (1,2)
+            let actual = (1,1) |> Tuple2.mapSnd ((+) 1)
+            Expect.equal actual expected null
+    ]
+
+[<Tests>]
+let resultTests=
+    testList "Result" [
+        testList "partition" [
+            testCase "works on empty elements"
+            <| fun _ ->
+                let expected = List.empty,List.empty
+                let actual = List.empty |> Result.partition
+                Expect.equal actual expected null
+            testCase "works with only Oks"
+            <| fun _ ->
+                let v = 2
+                let expected = [2], List.empty
+                let actual = [Ok v] |> Result.partition
+                Expect.equal actual expected null
+            testCase "works with only Errors"
+            <| fun _ ->
+                let v = "bad"
+                let expected = List.empty, [v]
+                let actual = [Error v] |> Result.partition
+                Expect.equal actual expected null
+            testCase "works with equal amounts"
+            <| fun _ ->
+                let okv, ev = 1,"error"
+                let expected = [okv], [ev]
+                let actual = [Error ev; Ok okv] |> Result.partition
+                Expect.equal actual expected null
+        ]
+    ]
+[<Tests>]
 let setTests =
-    testList "set module" [
+    testList "Set" [
         testCase "addAll can be happy"
         <| fun _ ->
             let expected = Set[1;2;3;4]
@@ -77,13 +151,78 @@ let mapTests =
 [<Tests>]
 let asyncTests =
     testList "async module" [
-        testCase "can be happy"
+        testCase "map can be happy"
         <| fun _ ->
             let expected = 5
             let actual = async { return 1} |> Async.map(fun x -> x + 4) |> Async.RunSynchronously
             Expect.equal actual expected null
-    ]
+        testList "withTimeout" [
+            testCase "can be happy"
+            <| fun _ ->
+                let expected = Ok 5
+                let actual = async {return 5} |> Async.withTimeout 1 |> Async.RunSynchronously
+                Expect.equal actual expected null
 
+            testCase "can timeout"
+            <| fun _ ->
+                async {
+                    do! Async.Sleep 6000
+                    return 5
+                 }
+                 |> Async.withTimeout 1
+                 |> Async.RunSynchronously
+                 |> function
+                    | Ok x -> failwithf "Expected timeout, got %A instead" x
+                    | Error _ -> ()
+        ]
+
+        testList "retry" [
+            testCase "can be happy"
+            <| fun _ ->
+                let expected = 5
+                let actual = Async.retry 0 (fun () -> async { return expected}) () |> Async.RunSynchronously
+                match actual with
+                | Ok actual ->
+                    Expect.equal actual expected null
+                | Error _ ->
+                    failwith "Errors in happy path"
+            testCase "does retry"
+            <| fun _ ->
+                let expected = 5
+                let mutable i = -1
+                let actual =
+                    Async.retry 1
+                        (fun () ->
+                            i <- i + 1
+                            async { if i = 0 then return failwith "I'm a failure" else return expected }
+                        ) ()
+                    |> Async.RunSynchronously
+                Expect.equal actual (Ok expected) null
+        ]
+        testList "retryBind" [
+            testCase "can be happy"
+            <| fun _ ->
+                let expected = 5
+                let actual = Async.retryBind 0 (fun () -> async { return Ok expected}) () |> Async.RunSynchronously
+                match actual with
+                | Ok actual ->
+                    Expect.equal actual expected null
+                | Error _ ->
+                    failwith "Errors in happy path"
+            testCase "does retry"
+            <| fun _ ->
+                let expected = 5
+                let mutable i = -1
+                let actual =
+                    Async.retryBind 1
+                        (fun () ->
+                            i <- i + 1
+                            async { if i = 0 then return failwith "I'm a failure" else return Ok expected }
+                        ) ()
+                    |> Async.RunSynchronously
+                Expect.equal actual (Ok expected) null
+        ]
+    ]
 
 [<Tests>]
 let optionBuilderTests =

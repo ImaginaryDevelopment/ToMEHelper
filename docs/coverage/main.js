@@ -224,23 +224,39 @@ var assemblies = [
   {
     "name": "ToMEHelper",
     "classes": [
-      { "name": "ToMEHelper.BHelpers", "rp": "ToMEHelper_BHelpers.htm", "cl": 25, "ucl": 5, "cal": 30, "tl": 55, "ct": "LineCoverage", "mc": "-", "cb": 13, "tb": 22, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.BHelpers", "rp": "ToMEHelper_BHelpers.htm", "cl": 64, "ucl": 5, "cal": 69, "tl": 135, "ct": "LineCoverage", "mc": "-", "cb": 17, "tb": 30, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Say", "rp": "ToMEHelper_Say.htm", "cl": 4, "ucl": 0, "cal": 4, "tl": 53, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Schema.Aggregation", "rp": "ToMEHelper_Aggregation.htm", "cl": 0, "ucl": 1, "cal": 1, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Schema.Talent", "rp": "ToMEHelper_Talent.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Schema.TalentCategoryType", "rp": "ToMEHelper_TalentCategoryType.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 1, "tb": 2, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Schema.TalentPower", "rp": "ToMEHelper_TalentPower.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Schema.ToMEClass", "rp": "ToMEHelper_ToMEClass.htm", "cl": 8, "ucl": 0, "cal": 8, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 8, "tb": 9, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Schema.ToMERace", "rp": "ToMEHelper_ToMERace.htm", "cl": 3, "ucl": 0, "cal": 3, "tl": 128, "ct": "LineCoverage", "mc": "-", "cb": 3, "tb": 4, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.Aggregation", "rp": "ToMEHelper_Aggregation.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.Talent", "rp": "ToMEHelper_Talent.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.TalentCategoryType", "rp": "ToMEHelper_TalentCategoryType.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 1, "tb": 2, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.TalentPower", "rp": "ToMEHelper_TalentPower.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.ToMEClass", "rp": "ToMEHelper_ToMEClass.htm", "cl": 8, "ucl": 0, "cal": 8, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 8, "tb": 9, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.ToMERace", "rp": "ToMEHelper_ToMERace.htm", "cl": 3, "ucl": 0, "cal": 3, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 3, "tb": 4, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Scraping.Characters.Logging", "rp": "ToMEHelper_Logging.htm", "cl": 0, "ucl": 8, "cal": 8, "tl": 73, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Scraping.Characters.Parsing", "rp": "ToMEHelper_Parsing.htm", "cl": 44, "ucl": 1, "cal": 45, "tl": 73, "ct": "LineCoverage", "mc": "-", "cb": 12, "tb": 24, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Scraping.CharacterVault.Logging", "rp": "ToMEHelper_Logging2.htm", "cl": 0, "ucl": 8, "cal": 8, "tl": 61, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Scraping.CharacterVault.VaultScraping", "rp": "ToMEHelper_VaultScraping.htm", "cl": 27, "ucl": 0, "cal": 27, "tl": 61, "ct": "LineCoverage", "mc": "-", "cb": 1, "tb": 4, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Scraping.ParseHelpers", "rp": "ToMEHelper_ParseHelpers.htm", "cl": 17, "ucl": 1, "cal": 18, "tl": 36, "ct": "LineCoverage", "mc": "-", "cb": 2, "tb": 4, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Scraping.ScrapeHelpers", "rp": "ToMEHelper_ScrapeHelpers.htm", "cl": 62, "ucl": 3, "cal": 65, "tl": 121, "ct": "LineCoverage", "mc": "-", "cb": 2, "tb": 4, "lch": [], "bch": [], "hc": [] },
     ]},
 ];
 
 var historicCoverageExecutionTimes = [];
 
 var riskHotspotMetrics = [
+      { "name": "Cyclomatic complexity", "explanationUrl": "https://en.wikipedia.org/wiki/Cyclomatic_complexity" },
+      { "name": "NPath complexity", "explanationUrl": "https://modess.io/npath-complexity-cyclomatic-complexity-explained" },
+      { "name": "Crap Score", "explanationUrl": "https://googletesting.blogspot.de/2011/02/this-code-is-crap.html" },
 ];
 
 var riskHotspots = [
+  {
+    "assembly": "ToMEHelper", "class": "ToMEHelper.Scraping.ScrapeHelpers", "reportPath": "ToMEHelper_ScrapeHelpers.htm", "methodName": "System.Int32 ToMEHelper.Scraping.ScrapeHelpers::getClassId(ToMEHelper.Schema.ToMEClass)", "methodShortName": "getClassId(...)", "fileIndex": 0, "line": 13,
+    "metrics": [
+      { "value": 36, "exceeded": true },
+      { "value": 0, "exceeded": false },
+      { "value": 36, "exceeded": true },
+    ]},
 ];
 
 var branchCoverageAvailable = true;

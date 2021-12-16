@@ -70,17 +70,17 @@ let talentPowerTypeTests =
     let all = makeDUAll1<TalentPower,_> ""
     makeAlwaysTest<TalentPower> (Some all) "talentPower" (fun x -> x.ToDump() |> ignore<string>)
 
-// module AggregationTests =
-//     open Aggregation
+module AggregationTests =
+    open Aggregation
 
-//     [<Tests>]
-//     let tests =
-//         testList "Aggregation" [
-//             testList "CategoryInvestment" [
-//                 testProperty "toDump"
-//                 <| fun (x:CategoryInvestment) ->
-//                     x.ToDump() |> ignore<int>
-//             ]
-//         ]
+    [<Tests>]
+    let tests =
+        testList "Aggregation" [
+            testList "CategoryInvestment" [
+                testProperty "toDump"
+                <| fun (x:CategoryInvestment) ->
+                    x.ToDump() |> ignore<int>
+            ]
+        ]
 
 

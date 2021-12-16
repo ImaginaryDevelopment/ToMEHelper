@@ -60,7 +60,7 @@ type ToMEClass =
     | Rogue
     | Sawbutcher
     | Shadowblade
-    | Shalore
+    // | Shalore
     // | Skeleton
     | Skirmisher
     | Solipsist
@@ -83,11 +83,16 @@ type ToMEClass =
             | _ -> string x
 
 type Difficulty =
+    | Easy
     | Normal
+    | Nightmare
+    | Madness
     | Insane
 
 [<NoComparison>]
-type CharacterLink = {User:string;Name:string;Path:string} // ;Link:obj}
+type CharacterLinkRaw = {User:string;Name:string;Path:string} // ;Link:obj}
+
+type CharacterLink = {User:string;Name:string;Path:string;Level:int option;Race:ToMERace option; Class:ToMEClass option}
 
 type Campaign =
     | Arena

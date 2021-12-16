@@ -5,7 +5,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <Title>ToMEHelper</Title>
-    <Description>ToMEHelper does the thing!</Description>
+    <Description>Adds helper code around parsing and doing statistics for Tales of Maj'Eyal</Description>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <Optimize>true</Optimize>
@@ -16,6 +16,10 @@
     <Compile Include="BHelpers.fs" />
     <Compile Include="Schema.fs" />
     <Compile Include="Library.fs" />
+    <Compile Include="Scraping\ScrapeHelpers.fs" />
+    <Compile Include="Scraping\ParseHelpers.fs" />
+    <Compile Include="Scraping\Characters.fs" />
+    <Compile Include="Scraping\CharacterVault.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

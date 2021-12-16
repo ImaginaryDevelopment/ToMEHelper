@@ -9,6 +9,7 @@ nuget Microsoft.NET.Test.Sdk 16.8.0
 nuget altcover ~> 7
 
 nuget Expecto.FsCheck
+nuget HtmlAgilityPack
 // [ FAKE GROUP ]
 group Build
     storage: none

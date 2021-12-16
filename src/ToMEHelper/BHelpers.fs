@@ -1,9 +1,22 @@
 module ToMEHelper.BHelpers
 
+type ToMELogger =
+    abstract Dump<'t> : 't -> unit
+    abstract Dump<'t> : 't*description:string -> unit
+
+let (|ValueString|_|) =
+    function
+    | null -> None
+    | "" -> None
+    | x when System.String.IsNullOrWhiteSpace x -> None
+    | x -> Some x
+
 let flip f x y = f y x
 let trim (x:string) = x.Trim()
 let before (delim:string) (x:string) = x.[0.. x.IndexOf delim - 1]
 let after (delim:string) (x:string) = x.[x.IndexOf delim + delim.Length ..]
+
+// f -> true starts a new bucket
 let chunkBy f x =
     let rec loop chunk chunks list =
         match list with
@@ -13,9 +26,22 @@ let chunkBy f x =
         | x::xs -> loop (x::chunk) chunks xs
     loop [] [] x
 
+module Tuple2 =
+    let mapFst f (x,y) = f x, y
+    let mapSnd f (x,y) = x, f y
+
 module Set =
     let addAll items s =
         (s,items) ||> Seq.fold(fun s v -> Set.add v s)
+
+module Result =
+    let partition items =
+        ((List.empty,List.empty), items)
+        ||> List.fold(fun (good,bad) ->
+            function
+            | Ok x -> x::good, bad
+            | Error e -> good, e::bad
+        )
 
 module Map =
     let addItem k x (m:Map<_,'t list>) =
@@ -33,11 +59,65 @@ module Map =
         )
 
 module Async =
+    open System.Threading
     let map f x =
         async {
             let! x2 = x
             return f x2
         }
+    // https://stackoverflow.com/questions/22245268/f-async-workflow-with-timeout
+    let withTimeout timeout x =
+        async {
+            let! child = Async.StartChild(x, timeout)
+            try
+                let! result = child
+                return Ok result
+            with :? System.TimeoutException -> return Error "timeout"
+        }
+    // let withCancellation (token:CancellationToken) x =
+    //     async{
+    //         try
+    //             let! value = Async.Start(x, cancellationToken = token)
+    //             return Ok value
+    //         with
+    //             | :? TaskCanceledException  as ex -> return Error ex
+    //             | :? AggregateException as ex -> return Error ex
+    //     }
+    // let withTokenTimeout timeout x =
+    //     async {
+    //         use tokenSource = new CancellationTokenSource (timeout)
+    //         return! x |> Async
+    //     }
+
+
+    let retry retries f x =
+        let rec retry i (exs:exn list) =
+            async {
+                try
+                    let! value = f x
+                    return Ok value
+                with ex ->
+                    if i > 0 then
+                        return! retry (i - 1) <| ex::exs
+                    else
+                        return Error (ex::exs)
+            }
+        retry retries List.empty
+
+    let retryBind retries f x =
+        let rec retry i (exs:exn list) =
+            async{
+                try
+                    match! f x with
+                    | Ok value -> return Ok value
+                    | Error ex -> return! retry (i-1) <| ex::exs
+                with ex ->
+                    if i > 0 then
+                        return! retry (i - 1) <| ex::exs
+                    else
+                        return Error (ex::exs)
+            }
+        retry retries List.empty
 
 [<Struct>]
 type OptionalBuilder =

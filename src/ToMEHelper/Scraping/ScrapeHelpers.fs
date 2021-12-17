@@ -78,6 +78,29 @@ let getCampaignId =
     | Infinite -> 24
     | Orcs -> 67402
 
+let tryGetRace tokens =
+    (None,[0.. List.length tokens])
+    ||> List.fold(fun r i ->
+        r
+        |> Option.orElseWith (fun () ->
+            tokens.[0..i]
+            |> String.concat ""
+            |> StringHelpers.tryParseDU<ToMERace>
+            |> Option.map(fun r -> r, tokens.[i..])
+        )
+    )
+let tryGetClass tokens =
+    (None, [0.. List.length tokens])
+    ||> List.fold(fun (r: (_*_) option) i ->
+        r
+        |> Option.orElseWith(fun () ->
+            tokens.[0..i]
+            |> String.concat ""
+            |> StringHelpers.tryParseDU<ToMEClass>
+            |> Option.map(fun r -> r, tokens.[i..])
+        )
+    )
+
 module Fetch =
     module Internals =
         type HttpClientType =
@@ -107,9 +130,13 @@ module Fetch =
             |> Seq.map(System.Uri.EscapeDataString >> sprintf "%s=%s" k)
 
         let queryPage' retries hct path kvs =
-            let query = (List.empty,kvs) ||> Map.fold(fun s k v -> v |> toQueryValues k |> String.concat "&" |> fun v -> v :: s) |> String.concat "&"
-            let fullpath = sprintf "%s?%s" path query |> System.Uri
-            Async.retryBind retries (getPage hct) fullpath
+            if path |> String.exists ((=) '?') |> not then
+                let query = (List.empty,kvs) ||> Map.fold(fun s k v -> v |> toQueryValues k |> String.concat "&" |> fun v -> v :: s) |> String.concat "&"
+                let fullpath = sprintf "%s?%s" path query |> System.Uri
+                let result = Async.retryBind retries (getPage hct) fullpath
+                result
+            else
+                invalidOp "bad path" |> List.singleton |> Error |> Async.result
 
     open Internals
 

@@ -4,7 +4,13 @@ open System
 open Expecto
 open ToMEHelper
 open ToMEHelper.BHelpers
-
+let failsBadDelim f =
+            testList "bad delim throws" [
+                testCase "null"
+                <| fun _ -> Expect.throws(fun () -> f null |> ignore) null
+                testCase "empty"
+                <| fun _ -> Expect.throws(fun () -> f "" |> ignore) null
+            ]
 [<Tests>]
 let uncategorizedTests =
     testList "uncategorized" [
@@ -38,37 +44,157 @@ let uncategorizedTests =
             let actual = [ 2;2;3;2;3;3;4;5;6] |> chunkBy (fun x -> x % 2 = 0)
             Expect.equal actual expected null
 
-        testList "ValueString" [
-            let vs x = (|ValueString|_|) x
+        testList "ValueStrings" [
+            testList "ValueString" [
+                let vs x = match x with | ValueString x -> Some x | _ -> None
 
-            testCase "null -> None"
+                testCase "null -> None"
+                <| fun _ ->
+                    let actual = vs null
+                    Expect.isNone actual null
+
+                testCase "'' -> None"
+                <| fun _ ->
+                    let actual = vs ""
+                    Expect.isNone actual null
+
+                testCase "' ' -> None"
+                <| fun _ ->
+                    let actual = vs " "
+                    Expect.isNone actual null
+
+                testCase "\\t -> None"
+                <| fun _ ->
+                    let actual = vs "\t"
+                    Expect.isNone actual null
+
+                testCase "'a' -> Some 'a'"
+                <| fun _ ->
+                    let expected = Some "a"
+                    let actual = vs "a"
+                    Expect.equal actual expected null
+            ]
+            testCase "NullString can be happy"
             <| fun _ ->
-                let actual = vs null
+                match null with
+                | NullString -> ()
+                | x -> failwithf "Null produced %A" x
+            testCase "EmptyString can be happy"
+            <| fun _ ->
+                match "" with
+                | EmptyString -> ()
+                | x -> failwithf "Empty produced %A" x
+            testList "Whitespace" [
+                testCase "' ' can be happy"
+                <| fun _ ->
+                    match " " with
+                    | Whitespace x ->
+                        Expect.equal x " " null
+                    | x -> failwithf "Whitespace did not match for '%s'" x
+            ]
+        ]
+        testList "failNonValue" [
+            testProperty "values are values" (fun (x:string) ->
+                match x with
+                | null | "" -> Expect.throws (fun () -> failNonValue "x" x) null
+                | x when String.IsNullOrWhiteSpace x -> Expect.throws (fun () -> failNonValue "x" x) null
+                | x -> failNonValue "x" x
+            )
+            testList "throw literals" (
+                [ "null",null; "empty",""; "space"," "; "tab","\t" ; "ret","\r"; "newline", "\n"]
+                |> List.map(fun (n,v) -> testCase n (fun _ -> Expect.throws (fun () -> failNonValue n v) null))
+            )
+        ]
+        testList "failNullOrEmpty" [
+            testProperty "values are values" (fun (x:string) ->
+                match x with
+                | null | "" -> Expect.throws (fun () -> failNonValue "x" x) null
+                | x -> failNullOrEmpty "x" x
+            )
+            testList "throw literals" (
+                [ "null",null; "empty",""]
+                |> List.map(fun (n,v) -> testCase n (fun _ -> Expect.throws (fun () -> failNonValue n v) null))
+            )
+        ]
+        testList "split" [
+            failsBadDelim split
+            testList "happy" [
+                testCase "spaces"
+                <| fun _ ->
+                    let expected = [| "hello"; "world" |]
+                    let actual = "hello world" |> split " "
+                    Expect.equal actual expected null
+            ]
+        ]
+        testList "tryBefore" [
+            failsBadDelim tryBefore
+            testCase "can be happy"
+            <| fun _ ->
+                let actual = tryBefore " " "hello world"
+                Expect.equal actual (Some "hello") null
+            testCase "can be None"
+            <| fun _ ->
+                let actual = tryBefore " " "hello"
                 Expect.isNone actual null
-
-            testCase "'' -> None"
+        ]
+        testList "tryAfter" [
+            failsBadDelim tryAfter
+            testCase "can be happy"
             <| fun _ ->
-                let actual = vs ""
+                let actual = tryAfter " " "hello world"
+                Expect.equal actual (Some "world") null
+            testCase "can be None"
+            <| fun _ ->
+                let actual = tryAfter " " "hello"
                 Expect.isNone actual null
-
-            testCase "' ' -> None"
-            <| fun _ ->
-                let actual = vs " "
-                Expect.isNone actual null
-
-            testCase "\\t -> None"
-            <| fun _ ->
-                let actual = vs "\t"
-                Expect.isNone actual null
-
-            testCase "'a' -> Some 'a'"
-            <| fun _ ->
-                let expected = Some "a"
-                let actual = vs "a"
-                Expect.equal actual expected null
         ]
     ]
-
+module StringHelpers =
+    open StringHelpers
+    [<Tests>]
+    let stringHelpersTests = testList "stringHelpers" [
+        testList "tryParse" [
+            let tryParseOfOption f x =
+                tryParse (fun x -> match f x with | None -> false,Unchecked.defaultof<_> | Some x -> true,x) x
+            testCase "can be happy"
+            <| fun _ ->
+                let text = "hello world"
+                let expected = tryBefore " " text
+                let actual = tryParse (function | Before " " x -> true,x | _ -> false,null) text
+                Expect.equal actual expected null
+            testCase "can be none"
+            <| fun _ ->
+                let text = "helloworld"
+                let expected = tryBefore " " text
+                let actual = tryParseOfOption (tryBefore " ") text
+                Expect.equal actual expected null
+        ]
+        testList "After" [
+            testCase "can be none"
+            <| fun _ ->
+                let text = "helloworld"
+                match text with | After " " _ -> failwith "there was no space" | _ -> ()
+            testCase "can be happy"
+            <| fun _ ->
+                let text = "hello world"
+                match text with  | After " " x -> Expect.equal x "world" null | _ -> failwith "after did not match"
+        ]
+        testList "Int" [
+            testCase "can be none"
+            <| fun _ ->
+                let text = ""
+                match text with | Int i -> failwith "that was not an int" | _ -> ()
+            testCase "can be happy"
+            <| fun _ ->
+                let expected = 1
+                let text = string expected
+                match text with | Int actual -> Expect.equal actual expected null | _ -> failwith "that was an int"
+            testProperty "any int can be happy"
+            <| fun (expected:int) ->
+                let text = string expected
+                match text with | Int actual -> Expect.equal actual expected null | _ -> failwith "that was an int"
+        ]
+    ]
 [<Tests>]
 let tuple2Tests =
     testList "Tuple2" [
@@ -151,6 +277,11 @@ let mapTests =
 [<Tests>]
 let asyncTests =
     testList "async module" [
+        testCase "result can be happy"
+        <| fun _ ->
+            let expected = 5
+            let actual = Async.result 5 |> Async.RunSynchronously
+            Expect.equal actual expected null
         testCase "map can be happy"
         <| fun _ ->
             let expected = 5

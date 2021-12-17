@@ -2,6 +2,7 @@
 namespace ToMEHelper.Scraping.CharacterVault
 
 open ToMEHelper.BHelpers
+open ToMEHelper.BHelpers.StringHelpers
 
 module Logging =
     let mutable logger : ToMELogger option = None
@@ -49,6 +50,47 @@ module VaultScraping =
                 let value: CharacterLinkRaw = {User=uname;Name=cName;Path=cHref} // ;Link=null}
                 value
         )
+
+    let clFromRaw ({User=uname;Name=cName;Path=cHref}:CharacterLinkRaw) =
+        let (|Name|_|) =
+            function
+            | Before " the level " n -> Some n
+            | _ -> None
+        let (|Level|_|) =
+            function
+            | After " the level "(Before " " (Int x)) -> Some x
+            | _ -> None
+
+        match cName with
+        | Name n & Level l ->
+            let unparsed =
+                cName
+                |> tryAfter " the level "
+                |> Option.bind (string l |> tryAfter)
+                |> Option.map (split " ")
+                |> Option.defaultValue Array.empty
+                |> List.ofSeq
+            let raceOpt,classOpt =
+                ToMEHelper.Scraping.ScrapeHelpers.tryGetRace unparsed
+                |> Option.map(fun (r,rem) ->
+                    r,ToMEHelper.Scraping.ScrapeHelpers.tryGetClass rem
+                )
+                |> function
+                    // hacky: we aren't checking for left over tokens
+                    | Some (r, cOpt) -> Some r, cOpt |> Option.map fst
+                    | None -> None, None
+
+            let result: CharacterLink = {
+                User=uname
+                Name=n
+                Path=cHref
+                Level = Some l
+                Race = raceOpt
+                Class = classOpt
+            }
+            result
+            |> Some
+        | _ -> None
 
     /// expects a document parsed from the result of submitting a query to the character vault
     let getCharacters (doc:HtmlAgilityPack.HtmlDocument) =

@@ -224,7 +224,7 @@ var assemblies = [
   {
     "name": "ToMEHelper",
     "classes": [
-      { "name": "ToMEHelper.BHelpers", "rp": "ToMEHelper_BHelpers.htm", "cl": 64, "ucl": 5, "cal": 69, "tl": 135, "ct": "LineCoverage", "mc": "-", "cb": 17, "tb": 30, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.BHelpers", "rp": "ToMEHelper_BHelpers.htm", "cl": 92, "ucl": 8, "cal": 100, "tl": 184, "ct": "LineCoverage", "mc": "-", "cb": 23, "tb": 36, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Say", "rp": "ToMEHelper_Say.htm", "cl": 4, "ucl": 0, "cal": 4, "tl": 53, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Schema.Aggregation", "rp": "ToMEHelper_Aggregation.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Schema.Talent", "rp": "ToMEHelper_Talent.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
@@ -234,10 +234,10 @@ var assemblies = [
       { "name": "ToMEHelper.Schema.ToMERace", "rp": "ToMEHelper_ToMERace.htm", "cl": 3, "ucl": 0, "cal": 3, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 3, "tb": 4, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Scraping.Characters.Logging", "rp": "ToMEHelper_Logging.htm", "cl": 0, "ucl": 8, "cal": 8, "tl": 73, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Scraping.Characters.Parsing", "rp": "ToMEHelper_Parsing.htm", "cl": 44, "ucl": 1, "cal": 45, "tl": 73, "ct": "LineCoverage", "mc": "-", "cb": 12, "tb": 24, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Scraping.CharacterVault.Logging", "rp": "ToMEHelper_Logging2.htm", "cl": 0, "ucl": 8, "cal": 8, "tl": 61, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Scraping.CharacterVault.VaultScraping", "rp": "ToMEHelper_VaultScraping.htm", "cl": 27, "ucl": 0, "cal": 27, "tl": 61, "ct": "LineCoverage", "mc": "-", "cb": 1, "tb": 4, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Scraping.CharacterVault.Logging", "rp": "ToMEHelper_Logging2.htm", "cl": 0, "ucl": 8, "cal": 8, "tl": 103, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Scraping.CharacterVault.VaultScraping", "rp": "ToMEHelper_VaultScraping.htm", "cl": 27, "ucl": 32, "cal": 59, "tl": 103, "ct": "LineCoverage", "mc": "-", "cb": 1, "tb": 10, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Scraping.ParseHelpers", "rp": "ToMEHelper_ParseHelpers.htm", "cl": 17, "ucl": 1, "cal": 18, "tl": 36, "ct": "LineCoverage", "mc": "-", "cb": 2, "tb": 4, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Scraping.ScrapeHelpers", "rp": "ToMEHelper_ScrapeHelpers.htm", "cl": 62, "ucl": 3, "cal": 65, "tl": 121, "ct": "LineCoverage", "mc": "-", "cb": 2, "tb": 4, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Scraping.ScrapeHelpers", "rp": "ToMEHelper_ScrapeHelpers.htm", "cl": 64, "ucl": 24, "cal": 88, "tl": 148, "ct": "LineCoverage", "mc": "-", "cb": 3, "tb": 6, "lch": [], "bch": [], "hc": [] },
     ]},
 ];
 
@@ -256,6 +256,20 @@ var riskHotspots = [
       { "value": 36, "exceeded": true },
       { "value": 0, "exceeded": false },
       { "value": 36, "exceeded": true },
+    ]},
+  {
+    "assembly": "ToMEHelper", "class": "ToMEHelper.Scraping.CharacterVault.VaultScraping", "reportPath": "ToMEHelper_VaultScraping.htm", "methodName": "Microsoft.FSharp.Core.FSharpOption`1<ToMEHelper.Schema.CharacterLink> ToMEHelper.Scraping.CharacterVault.VaultScraping::clFromRaw(ToMEHelper.Schema.CharacterLinkRaw)", "methodShortName": "clFromRaw(...)", "fileIndex": 0, "line": 64,
+    "metrics": [
+      { "value": 4, "exceeded": false },
+      { "value": 8, "exceeded": false },
+      { "value": 20, "exceeded": true },
+    ]},
+  {
+    "assembly": "ToMEHelper", "class": "ToMEHelper.Scraping.CharacterVault.VaultScraping", "reportPath": "ToMEHelper_VaultScraping.htm", "methodName": "Microsoft.FSharp.Core.FSharpOption`1<System.Int32> ToMEHelper.Scraping.CharacterVault.VaultScraping/|Level|_|@60::Invoke(System.String)", "methodShortName": "Invoke(...)", "fileIndex": 0, "line": 61,
+    "metrics": [
+      { "value": 4, "exceeded": false },
+      { "value": 0, "exceeded": false },
+      { "value": 20, "exceeded": true },
     ]},
 ];
 

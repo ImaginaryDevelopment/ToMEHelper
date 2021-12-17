@@ -2,19 +2,67 @@ module ToMEHelper.BHelpers
 
 type ToMELogger =
     abstract Dump<'t> : 't -> unit
-    abstract Dump<'t> : 't*description:string -> unit
+    abstract Dump<'t> : 't * description:string -> unit
 
-let (|ValueString|_|) =
+let (|ValueString|Whitespace|EmptyString|NullString|) =
     function
-    | null -> None
-    | "" -> None
-    | x when System.String.IsNullOrWhiteSpace x -> None
-    | x -> Some x
+    | null -> NullString
+    | "" -> EmptyString
+    | x when System.String.IsNullOrWhiteSpace x -> Whitespace x
+    | x -> ValueString x
+
 
 let flip f x y = f y x
 let trim (x:string) = x.Trim()
+let failNonValue name =
+    function
+    | ValueString _ -> ()
+    | _ -> failwithf "Required a value for %s" name
+let failNullOrEmpty name =
+    function
+    | ValueString _ -> ()
+    | "" | null -> failwithf "Required a value or whitespace for %s" name
+    | _ -> ()
+// not intended to work on splitting whitespace on whitespace
+let split delim =
+    failNullOrEmpty "delim" delim
+    function
+    | Whitespace x
+    | ValueString x ->
+        x.Split(delim)
+    | _ -> Array.empty
+
+let tryBefore delim =
+    failNullOrEmpty "delim" delim
+    fun (x:string) ->
+        match x.IndexOf delim with
+        | i when i >= 0 -> Some x.[0.. i - 1]
+        | _ -> None
+
+let tryAfter delim =
+    failNullOrEmpty "delim" delim
+    fun (x:string) ->
+        match x.IndexOf delim with
+        | i when i >= 0 -> Some x.[ i + delim.Length ..]
+        | _ -> None
+
 let before (delim:string) (x:string) = x.[0.. x.IndexOf delim - 1]
 let after (delim:string) (x:string) = x.[x.IndexOf delim + delim.Length ..]
+
+module StringHelpers =
+    let tryParse f (x:string) =
+        match f x with
+        | true, v -> Some v
+        | _ -> None
+    let (|Before|_|) delim = tryBefore delim
+    let (|After|_|) delim = tryAfter delim
+    let (|Int|_|) = tryParse System.Int32.TryParse
+
+    let tryParseDU<'t>(x:string) =
+        FSharp.Reflection.FSharpType.GetUnionCases(typeof<'t>)
+        |> Array.tryFind(fun uc -> uc.Name = x)
+        |> Option.map(fun uc -> FSharp.Reflection.FSharpValue.MakeUnion(uc,Array.empty) :?> 't)
+
 
 // f -> true starts a new bucket
 let chunkBy f x =
@@ -60,6 +108,7 @@ module Map =
 
 module Async =
     open System.Threading
+    let result x = async { return x }
     let map f x =
         async {
             let! x2 = x

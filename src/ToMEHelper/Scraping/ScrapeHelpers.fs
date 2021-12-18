@@ -86,7 +86,7 @@ let tryGetRace tokens =
             tokens.[0..i]
             |> String.concat ""
             |> StringHelpers.tryParseDU<ToMERace>
-            |> Option.map(fun r -> r, tokens.[i..])
+            |> Option.map(fun r -> r, tokens.[(i+1)..])
         )
     )
 let tryGetClass tokens =
@@ -97,7 +97,7 @@ let tryGetClass tokens =
             tokens.[0..i]
             |> String.concat ""
             |> StringHelpers.tryParseDU<ToMEClass>
-            |> Option.map(fun r -> r, tokens.[i..])
+            |> Option.map(fun r -> r, tokens.[(i+1)..])
         )
     )
 

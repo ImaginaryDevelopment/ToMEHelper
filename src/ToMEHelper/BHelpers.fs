@@ -49,6 +49,16 @@ let tryAfter delim =
 let before (delim:string) (x:string) = x.[0.. x.IndexOf delim - 1]
 let after (delim:string) (x:string) = x.[x.IndexOf delim + delim.Length ..]
 
+// f -> true starts a new bucket
+let chunkBy f x =
+    let rec loop chunk chunks list =
+        match list with
+        | [] -> List.rev ((List.rev chunk)::chunks)
+        | x::xs when f x && List.isEmpty chunk -> loop [x] chunks xs
+        | x::xs when f x -> loop [x] ((List.rev chunk)::chunks) xs
+        | x::xs -> loop (x::chunk) chunks xs
+    loop [] [] x
+
 module StringHelpers =
     let tryParse f (x:string) =
         match f x with
@@ -64,19 +74,62 @@ module StringHelpers =
         |> Option.map(fun uc -> FSharp.Reflection.FSharpValue.MakeUnion(uc,Array.empty) :?> 't)
 
 
-// f -> true starts a new bucket
-let chunkBy f x =
-    let rec loop chunk chunks list =
-        match list with
-        | [] -> List.rev ((List.rev chunk)::chunks)
-        | x::xs when f x && List.isEmpty chunk -> loop [x] chunks xs
-        | x::xs when f x -> loop [x] ((List.rev chunk)::chunks) xs
-        | x::xs -> loop (x::chunk) chunks xs
-    loop [] [] x
 
-module Tuple2 =
+
+module Option =
+    let ofValueString =
+        function
+        | ValueString x -> Some x
+        | _ -> None
+
+[<RequireQualifiedAccess>]
+module Tuple2 = // https://gist.github.com/ploeh/6d8050e121a5175fabb1d08ef5266cd7
     let mapFst f (x,y) = f x, y
     let mapSnd f (x,y) = x, f y
+    let replicate x = x, x
+    let curry f x y = f (x,y)
+    let uncurry f (x,y) = f x y
+    let swap (x,y) = y,x
+
+    // ascending pair
+    let asc (x,y) = min x y, max x y
+    // descending pair
+    let desc (x,y) = max x y, min x y
+
+    // checked addition would throw, we want (x,x+1)
+    let ofIncr x = if x = System.Int32.MaxValue then None else Some (x, x+1)
+    // checked subtraction would throw, we want (x, x-1)
+    let ofDecr x = if x = System.Int32.MinValue then None else Some (x, x-1)
+
+    let optionOfPair (x,y) =
+        match (x,y) with
+        | Some x, Some y -> Some(x,y)
+        | _ -> None
+    let optionOfFst f (x,y) =
+        match f x with
+        | Some x -> Some(x,y)
+        | None -> None
+    let optionOfSnd f (x,y) =
+        match f y with
+        | Some y -> Some(x,y)
+        | None -> None
+
+
+    let iter (f1:_ -> unit) (f2:_ -> unit) (x,y) = f1 x; f2 y
+
+    module Helpers =
+        // works with anything that supports comparison
+        let (|CompAsc|CompEq|CompDesc|) (x,y) =
+            if x < y then CompAsc(x,y)
+            elif x > y then CompDesc(x,y)
+            else CompEq x
+
+        let (|OptBoth|OptLeft|OptRight|OptNeither|) =
+            function
+            | None, None -> OptNeither
+            | Some x, Some y -> OptBoth(x,y)
+            | Some x, None -> OptLeft x
+            | None, Some y -> OptRight y
 
 module Set =
     let addAll items s =
@@ -167,6 +220,84 @@ module Async =
                         return Error (ex::exs)
             }
         retry retries List.empty
+
+type Tree<'t> = {
+    Value:'t
+    Children: Tree<'t> list
+}
+
+module Tree  =
+    let rec map f {Value=x;Children = trees} = {Value=f x;Children = trees |> List.map (map f)}
+    let leaf x = {Value=x;Children = List.empty}
+    // untested and unused
+    let rec tryFind f root =
+        if f root.Value then Some root
+        else root.Children |> Seq.choose(tryFind f) |> Seq.tryHead
+    let rec count {Value=_;Children=children}: int =
+        children |> List.map count
+        |> List.sum
+        |> (+) 1
+    let rec generateFromTree (ind,i) f x =
+        [
+            yield f x.Value |> sprintf "%s%s" (String.replicate i ind)
+            yield! x.Children |> List.collect(generateFromTree (ind,i+1) f)
+        ]
+    let generateFromForest (ind,i) f items =
+        items
+        |> List.collect (generateFromTree (ind,i) f)
+
+module TextParsing =
+
+    open Tuple2.Helpers
+    // assumes we're only interested in spaces (no tabs here)
+    // requires a value string
+    let getIndentation (indentChar:char) x =
+        x
+        |> Option.ofValueString
+        |> Option.map(fun x ->
+            x.Length - (x.TrimStart(indentChar).Length)
+        )
+
+    type TextInfo = {Index:int; Indent:int option; Line:string}
+
+    // let addSibling container next = next::container
+    let addChild parent child =
+        let children = child::parent.Children
+        {parent with Children= children}
+
+    let rec addNode (container:Tree<TextInfo> list) (next:TextInfo) =
+        match container with
+        | [] -> [Tree.leaf next]
+        | p::rem ->
+            match next.Indent, p.Value.Indent with
+            | OptBoth (CompAsc _) ->
+                    failwithf "We would be a parent of the current top-level node (%i,%s)" next.Index next.Line
+            | OptBoth (CompEq _) -> (Tree.leaf next)::p::rem
+            | OptBoth (CompDesc _) -> (addChild p (Tree.leaf next))::rem
+            | OptNeither _ -> (Tree.leaf next)::p::rem
+            | OptLeft _ -> // next has indentation, previous does not
+                (Tree.leaf next)::p::rem
+            | OptRight _ ->
+                (addChild p (Tree.leaf next))::rem
+
+
+    let toTreeHierarchy indentationChar lines =
+        (List.empty,lines |> List.indexed)
+        ||> Seq.fold(fun state (i,line) ->
+                //let makeNext liOpt = Tree.leaf {Index = i; Indent = liOpt |> Option.defaultValue defLineIndex;Line=line}
+                let makeNext li = {Index = i; Indent = li;Line=line}
+                match state, getIndentation indentationChar line with
+                | [], Some li -> (makeNext (Some li) |> Tree.leaf)::state
+                | [], None -> failwithf "First line must be a valueString: '%s'" line
+                // non-value string
+                | h::rem, None ->
+                    {h with Children = (makeNext None |> Tree.leaf)::h.Children}::rem
+                | p::rem, Some li ->
+                    let next = makeNext (Some li)
+                    let nextp = addNode [p] next
+                    nextp@rem
+        )
+        |> List.rev
 
 [<Struct>]
 type OptionalBuilder =

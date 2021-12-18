@@ -7,11 +7,16 @@ open Expecto
 // open FSharp.Reflection
 open ToMEHelper.Schema
 open ToMEHelper.Scraping.ScrapeHelpers
+open TestHelpers
+open ToMEHelper.BHelpers
+
+let races = lazy(ToMEHelper.SchemaTests.makeDUAll<ToMERace>())
+let classes = lazy(ToMEHelper.SchemaTests.makeDUAll<ToMEClass>())
 
 [<Tests>]
 let getClassId =
     testList "getClassId" (
-        ToMEHelper.SchemaTests.makeDUAll<ToMEClass>()
+        classes.Value
         |> Seq.map(fun x -> testCase (string x) (fun _ -> getClassId x |> ignore))
         |> List.ofSeq
     )
@@ -39,6 +44,20 @@ let getCampaignId =
         |> Seq.map(fun x -> testCase (string x) (fun _ -> getCampaignId x |> ignore))
         |> List.ofSeq
     )
+
+[<Tests>]
+let tryGetRaceTests = testList "tryGetRace" [
+    testCase "all races parse"
+    <| fun _ ->
+        races.Value
+        |> Seq.map (fun x -> x, string x)
+        |> Seq.iter(fun (r,text) ->
+            tryGetRace [text]
+            |> Option.iter(Tuple2.iter (fun v -> Expect.equal v r "race not parsed") (Assert.equal List.empty))
+        )
+
+
+]
 module Fetch =
     open Fetch.Internals
     [<Tests>]

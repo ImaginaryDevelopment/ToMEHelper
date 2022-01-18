@@ -6,7 +6,8 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        # os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -17,7 +18,10 @@ jobs:
     # # Not specifying a version will attempt to install via global.json
     # - name: Use .NET Core global.json
     #   uses: actions/setup-dotnet@v1
-
+    - run: 'dir env:'
+    - run: dotnet --version
+    - run: dotnet --list-sdks
+    - run: dotnet tool restore
     - name: Build
       if: runner.os != 'Windows'
       run: |

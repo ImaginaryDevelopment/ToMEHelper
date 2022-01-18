@@ -16,6 +16,8 @@
     <Compile Include="BHelpers.fs" />
     <Compile Include="Schema.fs" />
     <Compile Include="Library.fs" />
+    <Compile Include="Scraping\HttpHelpers.fs" />
+    <Compile Include="Scraping\ApiHelpers.fs" />
     <Compile Include="Scraping\ScrapeHelpers.fs" />
     <Compile Include="Scraping\ParseHelpers.fs" />
     <Compile Include="Scraping\Characters.fs" />

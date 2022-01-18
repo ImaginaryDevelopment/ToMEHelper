@@ -89,6 +89,18 @@ type Difficulty =
     | Madness
     | Insane
 
+type OwnerType =
+    | OnlineId of int
+    // api ownerId
+    | OwnerId of int
+
+/// note owner id is different on website vs api
+type CharacterId = {
+    Owner: OwnerType
+    Id: System.Guid
+}
+
+
 [<NoComparison>]
 type CharacterLinkRaw = {User:string;Name:string;Path:string} // ;Link:obj}
 
@@ -104,6 +116,27 @@ type Permadeath =
     | Adventure // small # of lives
     | Exploration
     | Roguelike // 1 life
+
+
+type ApiResult = {
+    UserName:string
+    Version:int
+    ProfileId:int
+    Campaign: Result<Campaign, int>
+    Alive: bool
+    Race: Result<ToMERace, int>
+    Id: System.Guid
+    Level: int
+    // Custom ints or unmapped can be errors
+    Class: Result<ToMEClass, int>
+    Winner: bool
+    Title: string
+    Permadeath: Result<Permadeath,int>
+    OfficialAddons: bool
+    CharsheetApi: string
+    LastUpdated: string
+    Difficulty: Result<Difficulty,int>
+}
 
 module Charsheets =
     type Prodigies = Map<string,int> // assuming prodigies only go 1/1 for now

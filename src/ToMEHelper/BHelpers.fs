@@ -23,6 +23,7 @@ let failNullOrEmpty name =
     | ValueString _ -> ()
     | "" | null -> failwithf "Required a value or whitespace for %s" name
     | _ -> ()
+
 // not intended to work on splitting whitespace on whitespace
 let split delim =
     failNullOrEmpty "delim" delim
@@ -60,6 +61,8 @@ let chunkBy f x =
     loop [] [] x
 
 module StringHelpers =
+    let equalsI (y:string) (x:string) =
+        System.String.Equals(x,y, System.StringComparison.InvariantCultureIgnoreCase)
     let tryParse f (x:string) =
         match f x with
         | true, v -> Some v
@@ -70,7 +73,7 @@ module StringHelpers =
 
     let tryParseDU<'t>(x:string) =
         FSharp.Reflection.FSharpType.GetUnionCases(typeof<'t>)
-        |> Array.tryFind(fun uc -> uc.Name = x)
+        |> Array.tryFind(fun uc -> equalsI uc.Name x)
         |> Option.map(fun uc -> FSharp.Reflection.FSharpValue.MakeUnion(uc,Array.empty) :?> 't)
 
 

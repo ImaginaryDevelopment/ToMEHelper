@@ -18,11 +18,10 @@ type ToMERace =
     | Thalore
     | Whitehoof
     | Yeek
-    with
-        member x.GetDisplay() =
-            match x with
-            | KrukYeti -> "Kruk Yeti"
-            | _ -> string x
+    member x.GetDisplay() =
+        match x with
+        | KrukYeti -> "Kruk Yeti"
+        | _ -> string x
 
 type ToMEClass =
     | Adventurer
@@ -71,16 +70,15 @@ type ToMEClass =
     | WrithingOne
     | Wyrmic
     // | Yeek
-    with
-        member x.GetDisplay() =
-            match x with
-            | ArcaneBlade ->        "Arcane Blade"
-            | CultistOfEntropy ->   "Cultist Of Entropy"
-            | ParadoxMage ->        "Paradox Mage"
-            | StoneWarden ->        "Stone Warden"
-            | SunPaladin ->         "Sun Paladin"
-            | TemporalWarden ->     "Temporal Warden"
-            | _ -> string x
+    member x.GetDisplay() =
+        match x with
+        | ArcaneBlade -> "Arcane Blade"
+        | CultistOfEntropy -> "Cultist Of Entropy"
+        | ParadoxMage -> "Paradox Mage"
+        | StoneWarden -> "Stone Warden"
+        | SunPaladin -> "Sun Paladin"
+        | TemporalWarden -> "Temporal Warden"
+        | _ -> string x
 
 type Difficulty =
     | Easy
@@ -95,16 +93,22 @@ type OwnerType =
     | OwnerId of int
 
 /// note owner id is different on website vs api
-type CharacterId = {
-    Owner: OwnerType
-    Id: System.Guid
-}
+type CharacterId = { Owner: OwnerType; Id: System.Guid }
 
 
 [<NoComparison>]
-type CharacterLinkRaw = {User:string;Name:string;Path:string} // ;Link:obj}
+type CharacterLinkRaw =
+    { User: string
+      Name: string
+      Path: string } // ;Link:obj}
 
-type CharacterLink = {User:string;Name:string;Path:string;Level:int option;Race:ToMERace option; Class:ToMEClass option}
+type CharacterLink =
+    { User: string
+      Name: string
+      Path: string
+      Level: int option
+      Race: ToMERace option
+      Class: ToMEClass option }
 
 type Campaign =
     | Arena
@@ -118,49 +122,84 @@ type Permadeath =
     | Roguelike // 1 life
 
 
-type ApiResult = {
-    UserName:string
-    Version:int
-    ProfileId:int
-    Campaign: Result<Campaign, int>
-    Alive: bool
-    Race: Result<ToMERace, int>
-    Id: System.Guid
-    Level: int
-    // Custom ints or unmapped can be errors
-    Class: Result<ToMEClass, int>
-    Winner: bool
-    Title: string
-    Permadeath: Result<Permadeath,int>
-    OfficialAddons: bool
-    CharsheetApi: string
-    LastUpdated: string
-    Difficulty: Result<Difficulty,int>
-}
+type ApiResult =
+    { UserName: string
+      Version: int
+      ProfileId: int
+      Campaign: Result<Campaign, int>
+      Alive: bool
+      Race: Result<ToMERace, int>
+      Id: System.Guid
+      Level: int
+      // Custom ints or unmapped can be errors
+      Class: Result<ToMEClass, int>
+      Winner: bool
+      Title: string
+      Permadeath: Result<Permadeath, int>
+      OfficialAddons: bool
+      CharsheetApi: string
+      LastUpdated: string
+      Difficulty: Result<Difficulty, int> }
 
 module Charsheets =
-    type Prodigies = Map<string,int> // assuming prodigies only go 1/1 for now
-    type StatSummary = { StatName:string; Base:int; Effective:int}
+    type Prodigies = Map<string, int> // assuming prodigies only go 1/1 for now
+
+    type StatSummary =
+        { StatName: string
+          Base: int
+          Effective: int }
+
     type StatCharsheet = StatSummary list
-    type CharacterCharsheet = {Campaign:string;Mode:string*string;Race:string;Class:string}
 
-type Talent = {Name:string;Points:int}
+    type CharacterCharsheet =
+        { Campaign: string
+          Mode: string * string
+          Race: string
+          Class: string }
+
+type Talent =
+    { Name: string
+      Points: int }
     // with member x.Dump() = sprintf "%s-%i" x.Name x.Points
-    with member x.ToDump() = sprintf "%s-%i" x.Name x.Points
+    member x.ToDump() = sprintf "%s-%i" x.Name x.Points
 
-type TalentCategory = {Name:string; Power:string;Talents:Talent list}
+type TalentCategory =
+    { Name: string
+      Power: string
+      Talents: Talent list }
+
 type TalentCategoryType =
     | Class
     | Generic
-    with member x.ToDump() = string x
+    member x.ToDump() = string x
 
-type TalentPower = TalentPower of string with member x.ToDump() = match x with | TalentPower v -> v
+type TalentPower =
+    | TalentPower of string
+    member x.ToDump() =
+        match x with
+        | TalentPower v -> v
 
 module Aggregation =
-    type CategoryInvestment = CategoryInvestment of int with member x.ToDump() = match x with | CategoryInvestment v -> v
-    type CategoryAnaly = { TotalPoints: int; TalentsObtained:int}
+    type CategoryInvestment =
+        | CategoryInvestment of int
+        member x.ToDump() =
+            match x with
+            | CategoryInvestment v -> v
 
-    [<NoComparison;NoEquality>]
-    type MappedCharacter = { Character:CharacterLink;Prodigies:Charsheets.Prodigies; ClassTalents: TalentCategory list;GenericTalents: TalentCategory list}
+    type CategoryAnaly =
+        { TotalPoints: int
+          TalentsObtained: int }
 
-    type SequenceStatData = { Mean:decimal;Median:int; Min:int;Max:int;Population:int}
+    [<NoComparison; NoEquality>]
+    type MappedCharacter =
+        { Character: CharacterLink
+          Prodigies: Charsheets.Prodigies
+          ClassTalents: TalentCategory list
+          GenericTalents: TalentCategory list }
+
+    type SequenceStatData =
+        { Mean: decimal
+          Median: int
+          Min: int
+          Max: int
+          Population: int }

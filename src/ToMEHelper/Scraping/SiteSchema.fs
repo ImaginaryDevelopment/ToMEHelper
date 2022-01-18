@@ -72,6 +72,7 @@ let getCampaignId =
     | Arena -> 46
     | Infinite -> 24
     | Orcs -> 67402
+
 let getClassFromId =
     function
     | 104 -> Ok Adventurer
@@ -90,18 +91,18 @@ let getClassFromId =
     | 23297 -> Ok Demonologist
     | 23313 -> Ok Doombringer
     | 29 -> Ok Doomed
-//  | 267 -> Ok Dwarf
+    //  | 267 -> Ok Dwarf
 //  | 103389 -> Ok Ghoul
     | 208 -> Ok Gunslinger
-//  | 10201 -> Ok Halfling
+    //  | 10201 -> Ok Halfling
 //  | 31036 -> Ok Higher
 //  | 815099 -> Ok Insane
     | 71 -> Ok Marauder
     | 48 -> Ok Mindslayer
     | 68 -> Ok Necromancer
-//  | 322125 -> Ok Ogre
+    //  | 322125 -> Ok Ogre
     | 179 -> Ok Oozemancer
-//  | 94927 -> Ok Orc
+    //  | 94927 -> Ok Orc
     | 43 -> Ok ParadoxMage
     | 95691 -> Ok Possessor
     | 67509 -> Ok Psyshot
@@ -109,7 +110,7 @@ let getClassFromId =
     | 12 -> Ok Rogue
     | 67403 -> Ok Sawbutcher
     | 23 -> Ok Shadowblade
-//  | 284 -> Ok Shalore
+    //  | 284 -> Ok Shalore
 //  | 341234 -> Ok Skeleton
     | 12400 -> Ok Skirmisher
     | 102 -> Ok Solipsist

@@ -13,6 +13,8 @@
     <Compile Include="TestHelpers.fs" />
     <Compile Include="BHelpersTests.fs" />
     <Compile Include="SchemaTests.fs" />
+    <Compile Include="Scraping\SiteSchemaTests.fs" />
+    <Compile Include="Scraping\HttpHelpersTests.fs" />
     <Compile Include="Scraping\ApiHelpersTests.fs" />
     <Compile Include="Scraping\ScrapeHelpersTests.fs" />
     <Compile Include="Scraping\ParseHelpersTests.fs" />

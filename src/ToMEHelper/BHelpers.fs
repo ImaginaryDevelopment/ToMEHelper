@@ -249,59 +249,6 @@ module Tree  =
         items
         |> List.collect (generateFromTree (ind,i) f)
 
-module TextParsing =
-
-    open Tuple2.Helpers
-    // assumes we're only interested in spaces (no tabs here)
-    // requires a value string
-    let getIndentation (indentChar:char) x =
-        x
-        |> Option.ofValueString
-        |> Option.map(fun x ->
-            x.Length - (x.TrimStart(indentChar).Length)
-        )
-
-    type TextInfo = {Index:int; Indent:int option; Line:string}
-
-    // let addSibling container next = next::container
-    let addChild parent child =
-        let children = child::parent.Children
-        {parent with Children= children}
-
-    let rec addNode (container:Tree<TextInfo> list) (next:TextInfo) =
-        match container with
-        | [] -> [Tree.leaf next]
-        | p::rem ->
-            match next.Indent, p.Value.Indent with
-            | OptBoth (CompAsc _) ->
-                    failwithf "We would be a parent of the current top-level node (%i,%s)" next.Index next.Line
-            | OptBoth (CompEq _) -> (Tree.leaf next)::p::rem
-            | OptBoth (CompDesc _) -> (addChild p (Tree.leaf next))::rem
-            | OptNeither _ -> (Tree.leaf next)::p::rem
-            | OptLeft _ -> // next has indentation, previous does not
-                (Tree.leaf next)::p::rem
-            | OptRight _ ->
-                (addChild p (Tree.leaf next))::rem
-
-
-    let toTreeHierarchy indentationChar lines =
-        (List.empty,lines |> List.indexed)
-        ||> Seq.fold(fun state (i,line) ->
-                //let makeNext liOpt = Tree.leaf {Index = i; Indent = liOpt |> Option.defaultValue defLineIndex;Line=line}
-                let makeNext li = {Index = i; Indent = li;Line=line}
-                match state, getIndentation indentationChar line with
-                | [], Some li -> (makeNext (Some li) |> Tree.leaf)::state
-                | [], None -> failwithf "First line must be a valueString: '%s'" line
-                // non-value string
-                | h::rem, None ->
-                    {h with Children = (makeNext None |> Tree.leaf)::h.Children}::rem
-                | p::rem, Some li ->
-                    let next = makeNext (Some li)
-                    let nextp = addNode [p] next
-                    nextp@rem
-        )
-        |> List.rev
-
 [<Struct>]
 type OptionalBuilder =
   member __.Bind(opt, binder) =

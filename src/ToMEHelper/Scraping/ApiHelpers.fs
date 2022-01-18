@@ -4,87 +4,12 @@ open System
 open ToMEHelper.BHelpers
 
 open ToMEHelper.Schema
+open ToMEHelper.Scraping.SiteSchema
 
 type ApiPair = {
     Id: int
     Key: Guid
 }
-
-let getClassFromId =
-    function
-    | 104 -> Ok Adventurer
-    | 19 -> Ok Alchemist
-    | 326744 -> Ok Annihilator
-    | 20 -> Ok Anorithil
-    | 22 -> Ok ArcaneBlade
-    | 14 -> Ok Archer
-    | 7 -> Ok Archmage
-    | 16 -> Ok Berserker
-    | 56 -> Ok Brawler
-    | 80 -> Ok Bulwark
-    | 34 -> Ok Corruptor
-    | 133921 -> Ok CultistOfEntropy
-    | 10 -> Ok Cursed
-    | 23297 -> Ok Demonologist
-    | 23313 -> Ok Doombringer
-    | 29 -> Ok Doomed
-//  | 267 -> Ok Dwarf
-//  | 103389 -> Ok Ghoul
-    | 208 -> Ok Gunslinger
-//  | 10201 -> Ok Halfling
-//  | 31036 -> Ok Higher
-//  | 815099 -> Ok Insane
-    | 71 -> Ok Marauder
-    | 48 -> Ok Mindslayer
-    | 68 -> Ok Necromancer
-//  | 322125 -> Ok Ogre
-    | 179 -> Ok Oozemancer
-//  | 94927 -> Ok Orc
-    | 43 -> Ok ParadoxMage
-    | 95691 -> Ok Possessor
-    | 67509 -> Ok Psyshot
-    | 31 -> Ok Reaver
-    | 12 -> Ok Rogue
-    | 67403 -> Ok Sawbutcher
-    | 23 -> Ok Shadowblade
-//  | 284 -> Ok Shalore
-//  | 341234 -> Ok Skeleton
-    | 12400 -> Ok Skirmisher
-    | 102 -> Ok Solipsist
-    | 70 -> Ok StoneWarden
-    | 17 -> Ok Summoner
-    | 27 -> Ok SunPaladin
-    | 49 -> Ok TemporalWarden
-    | 104071 -> Ok WrithingOne
-    | 4 -> Ok Wyrmic
-    | x -> Error x
-
-let getCampaignFromId =
-    function
-    | 2 -> Ok Maj
-    | 46 -> Ok Arena
-    | 24 -> Ok Infinite
-    | 67402 -> Ok Orcs
-    | x -> Error x
-
-let getDifficultyFromId =
-    function
-    | 33 -> Ok Easy
-    | 6 -> Ok Normal
-    | 26 -> Ok Nightmare
-    | 227 -> Ok Madness
-    | 36 -> Ok Insane
-    | x -> Error x
-
-let getPermadeathFromId =
-    function
-    | 72 -> Ok Exploration
-    | 65 -> Ok Adventure
-    | 66 -> Ok Roguelike
-    | x -> Error x
-
-// let getRaceFromId =
-//     function
 
 
 type ApiResultRaw = {
@@ -112,7 +37,7 @@ type ApiResultRaw = {
             ProfileId= x.id_profile
             Campaign= getCampaignFromId x.id_campaign
             Alive= x.status = "alive"
-            Race= Error x.id_race // getRaceFromId x.id_race
+            Race= getRaceFromId x.id_race
             Id= x.uuid
             Level= x.level
             Class= getClassFromId x.id_class
@@ -130,7 +55,7 @@ let baseUrl = "http://zigur.te4.org"
 let getCharPath apiPair characterId =
     match characterId.Owner with
     | OnlineId i ->
-        sprintf "/%i/%A/characters/get/%i/tome/%A/json&online_id=1" apiPair.Id apiPair.Key i characterId.Id
+        sprintf "/%i/%A/characters/get/%i/tome/%A/json?online_id=1" apiPair.Id apiPair.Key i characterId.Id
     | OwnerId i ->
         sprintf "/%i/%A/characters/get/%i/tome/%A/json" apiPair.Id apiPair.Key i characterId.Id
 
@@ -159,24 +84,16 @@ type CharacterFilter = {
     OnlyOfficialAddons: bool option
 }
 
-// type ApiResultRaw with
-
-//     static member FromRaw (x:ApiResult) =
-//         {
-
-//         }
-
 let getCharacterFindPath apiPair characterFilter =
     let pairs = Map [
         match characterFilter.Permadeath with
         | None -> ()
         | Some pd ->
-            yield "id_permadeath",
-            match pd with
-            | Exploration -> 2
-            | Roguelike -> 3
-            | Adventure -> 1
-            |> string
+            yield "id_permadeath", getPermadeathId pd |> string
+        match characterFilter.Difficulty with
+        | None -> ()
+        | Some d ->
+            yield "id_difficulty", getDifficultyId d |> string
     ]
     // "/:api_id/:api_key/characters/find"
     let path = sprintf "%i/%A/characters/find" apiPair.Id apiPair.Key

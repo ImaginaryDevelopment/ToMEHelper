@@ -8,6 +8,8 @@ type HtmlMsgHandler(f) as me =
     do
         me.InnerHandler <- new HttpClientHandler()
 
+    member x.SendAsync' (req,token) = x.SendAsync(req,token)
+
     override _.SendAsync(req,token) =
         match req.RequestUri.Query with
         | ValueString _ ->

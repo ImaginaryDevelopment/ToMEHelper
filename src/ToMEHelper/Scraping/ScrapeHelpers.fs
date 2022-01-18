@@ -8,75 +8,7 @@ open ToMEHelper.Schema
 //     function
 //     | ToMERace.Cornac ->
 
-let getClassId =
-    function
-    | Adventurer -> 104
-    | Alchemist -> 19
-    | Annihilator -> 326744
-    | Anorithil -> 20
-    | ArcaneBlade -> 22
-    | Archer -> 14
-    | Archmage -> 7
-    | Berserker -> 16
-    | Brawler -> 56
-    | Bulwark -> 80
-    | Corruptor -> 34
-    | CultistOfEntropy -> 133921
-    | Cursed -> 10
-    | Demonologist -> 23297
-    | Doombringer -> 23313
-    | Doomed -> 29
-    // | Dwarf -> 267
-    // | Ghoul -> 103389
-    | Gunslinger -> 208
-    // | Halfling -> 10201
-    // | Higher -> 31036
-    // | Insane -> 815099
-    | Marauder -> 71
-    | Mindslayer -> 48
-    | Necromancer -> 68
-    // | Ogre -> 322125
-    | Oozemancer -> 179
-    // | Orc -> 94927
-    | ParadoxMage -> 43
-    | Possessor -> 95691
-    | Psyshot -> 67509
-    | Reaver -> 31
-    | Rogue -> 12
-    | Sawbutcher -> 67403
-    | Shadowblade -> 23
-    // | Shalore -> 284
-    // | Skeleton -> 341234
-    | Skirmisher -> 12400
-    | Solipsist -> 102
-    | StoneWarden -> 70
-    | Summoner -> 17
-    | SunPaladin -> 27
-    | TemporalWarden -> 49
-    | WrithingOne -> 104071
-    | Wyrmic -> 4
-    // | Yeek -> 170
 
-let getDifficultyId =
-    function
-    | Easy -> 33
-    | Normal -> 6
-    | Nightmare -> 26
-    | Madness -> 227
-    | Insane -> 36
-
-let getPermadeathId =
-    function
-    | Exploration -> 72
-    | Adventure -> 65
-    | Roguelike -> 66
-
-let getCampaignId =
-    function
-    | Maj -> 2
-    | Arena -> 46
-    | Infinite -> 24
-    | Orcs -> 67402
 
 let tryGetRace tokens =
     (None,[0.. List.length tokens])

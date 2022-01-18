@@ -1,0 +1,1 @@
+dotnet watch test --project .\tests\ToMEHelper.Tests\ToMEHelper.Tests.fsproj

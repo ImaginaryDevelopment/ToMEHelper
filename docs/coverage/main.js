@@ -224,18 +224,20 @@ var assemblies = [
   {
     "name": "ToMEHelper",
     "classes": [
-      { "name": "ToMEHelper.BHelpers", "rp": "ToMEHelper_BHelpers.htm", "cl": 135, "ucl": 24, "cal": 159, "tl": 281, "ct": "LineCoverage", "mc": "-", "cb": 39, "tb": 60, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.BHelpers", "rp": "ToMEHelper_BHelpers.htm", "cl": 142, "ucl": 31, "cal": 173, "tl": 318, "ct": "LineCoverage", "mc": "-", "cb": 45, "tb": 72, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Say", "rp": "ToMEHelper_Say.htm", "cl": 4, "ucl": 0, "cal": 4, "tl": 53, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Schema.Aggregation", "rp": "ToMEHelper_Aggregation.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Schema.Talent", "rp": "ToMEHelper_Talent.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Schema.TalentCategoryType", "rp": "ToMEHelper_TalentCategoryType.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 1, "tb": 2, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Schema.TalentPower", "rp": "ToMEHelper_TalentPower.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Schema.ToMEClass", "rp": "ToMEHelper_ToMEClass.htm", "cl": 8, "ucl": 0, "cal": 8, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 8, "tb": 9, "lch": [], "bch": [], "hc": [] },
-      { "name": "ToMEHelper.Schema.ToMERace", "rp": "ToMEHelper_ToMERace.htm", "cl": 3, "ucl": 0, "cal": 3, "tl": 133, "ct": "LineCoverage", "mc": "-", "cb": 3, "tb": 4, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.Aggregation", "rp": "ToMEHelper_Aggregation.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 166, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.Talent", "rp": "ToMEHelper_Talent.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 166, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.TalentCategoryType", "rp": "ToMEHelper_TalentCategoryType.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 166, "ct": "LineCoverage", "mc": "-", "cb": 1, "tb": 2, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.TalentPower", "rp": "ToMEHelper_TalentPower.htm", "cl": 1, "ucl": 0, "cal": 1, "tl": 166, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.ToMEClass", "rp": "ToMEHelper_ToMEClass.htm", "cl": 8, "ucl": 0, "cal": 8, "tl": 166, "ct": "LineCoverage", "mc": "-", "cb": 8, "tb": 9, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Schema.ToMERace", "rp": "ToMEHelper_ToMERace.htm", "cl": 3, "ucl": 0, "cal": 3, "tl": 166, "ct": "LineCoverage", "mc": "-", "cb": 3, "tb": 4, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Scraping.ApiHelpers", "rp": "ToMEHelper_ApiHelpers.htm", "cl": 2, "ucl": 85, "cal": 87, "tl": 186, "ct": "LineCoverage", "mc": "-", "cb": 1, "tb": 7, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Scraping.Characters.Logging", "rp": "ToMEHelper_Logging.htm", "cl": 0, "ucl": 8, "cal": 8, "tl": 73, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Scraping.Characters.Parsing", "rp": "ToMEHelper_Parsing.htm", "cl": 44, "ucl": 1, "cal": 45, "tl": 73, "ct": "LineCoverage", "mc": "-", "cb": 12, "tb": 24, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Scraping.CharacterVault.Logging", "rp": "ToMEHelper_Logging2.htm", "cl": 0, "ucl": 8, "cal": 8, "tl": 103, "ct": "LineCoverage", "mc": "-", "cb": 0, "tb": 0, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Scraping.CharacterVault.VaultScraping", "rp": "ToMEHelper_VaultScraping.htm", "cl": 56, "ucl": 3, "cal": 59, "tl": 103, "ct": "LineCoverage", "mc": "-", "cb": 4, "tb": 10, "lch": [], "bch": [], "hc": [] },
+      { "name": "ToMEHelper.Scraping.HttpHelpers", "rp": "ToMEHelper_HttpHelpers.htm", "cl": 0, "ucl": 26, "cal": 26, "tl": 44, "ct": "LineCoverage", "mc": "-", "cb": 1, "tb": 6, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Scraping.ParseHelpers", "rp": "ToMEHelper_ParseHelpers.htm", "cl": 17, "ucl": 1, "cal": 18, "tl": 36, "ct": "LineCoverage", "mc": "-", "cb": 2, "tb": 4, "lch": [], "bch": [], "hc": [] },
       { "name": "ToMEHelper.Scraping.ScrapeHelpers", "rp": "ToMEHelper_ScrapeHelpers.htm", "cl": 84, "ucl": 4, "cal": 88, "tl": 148, "ct": "LineCoverage", "mc": "-", "cb": 3, "tb": 6, "lch": [], "bch": [], "hc": [] },
     ]},
@@ -251,6 +253,34 @@ var riskHotspotMetrics = [
 
 var riskHotspots = [
   {
+    "assembly": "ToMEHelper", "class": "ToMEHelper.Scraping.ApiHelpers", "reportPath": "ToMEHelper_ApiHelpers.htm", "methodName": "Microsoft.FSharp.Core.FSharpResult`2<ToMEHelper.Schema.ToMEClass,System.Int32> ToMEHelper.Scraping.ApiHelpers::getClassFromId(System.Int32)", "methodShortName": "getClassFromId(...)", "fileIndex": 0, "line": 15,
+    "metrics": [
+      { "value": 38, "exceeded": true },
+      { "value": 0, "exceeded": false },
+      { "value": 1482, "exceeded": true },
+    ]},
+  {
+    "assembly": "ToMEHelper", "class": "ToMEHelper.Scraping.ApiHelpers", "reportPath": "ToMEHelper_ApiHelpers.htm", "methodName": "System.Int32 ToMEHelper.Scraping.ApiHelpers/pairs@171::GenerateNext(System.Collections.Generic.IEnumerable`1<System.Tuple`2<System.String,System.String>>&)", "methodShortName": "GenerateNext(...)", "fileIndex": 0, "line": 171,
+    "metrics": [
+      { "value": 8, "exceeded": false },
+      { "value": 6, "exceeded": false },
+      { "value": 72, "exceeded": true },
+    ]},
+  {
+    "assembly": "ToMEHelper", "class": "ToMEHelper.Scraping.ApiHelpers", "reportPath": "ToMEHelper_ApiHelpers.htm", "methodName": "Microsoft.FSharp.Core.FSharpResult`2<ToMEHelper.Schema.Difficulty,System.Int32> ToMEHelper.Scraping.ApiHelpers::getDifficultyFromId(System.Int32)", "methodShortName": "getDifficultyFromId(...)", "fileIndex": 0, "line": 72,
+    "metrics": [
+      { "value": 7, "exceeded": false },
+      { "value": 0, "exceeded": false },
+      { "value": 56, "exceeded": true },
+    ]},
+  {
+    "assembly": "ToMEHelper", "class": "ToMEHelper.Scraping.ApiHelpers", "reportPath": "ToMEHelper_ApiHelpers.htm", "methodName": "Microsoft.FSharp.Core.FSharpResult`2<ToMEHelper.Schema.Campaign,System.Int32> ToMEHelper.Scraping.ApiHelpers::getCampaignFromId(System.Int32)", "methodShortName": "getCampaignFromId(...)", "fileIndex": 0, "line": 64,
+    "metrics": [
+      { "value": 6, "exceeded": false },
+      { "value": 0, "exceeded": false },
+      { "value": 42, "exceeded": true },
+    ]},
+  {
     "assembly": "ToMEHelper", "class": "ToMEHelper.Scraping.ScrapeHelpers", "reportPath": "ToMEHelper_ScrapeHelpers.htm", "methodName": "System.Int32 ToMEHelper.Scraping.ScrapeHelpers::getClassId(ToMEHelper.Schema.ToMEClass)", "methodShortName": "getClassId(...)", "fileIndex": 0, "line": 13,
     "metrics": [
       { "value": 36, "exceeded": true },
@@ -258,7 +288,14 @@ var riskHotspots = [
       { "value": 36, "exceeded": true },
     ]},
   {
-    "assembly": "ToMEHelper", "class": "ToMEHelper.BHelpers", "reportPath": "ToMEHelper_BHelpers.htm", "methodName": "Microsoft.FSharp.Collections.FSharpList`1<ToMEHelper.BHelpers/Tree`1<ToMEHelper.BHelpers/TextParsing/TextInfo>> ToMEHelper.BHelpers/TextParsing/toTreeHierarchy@251::Invoke(Microsoft.FSharp.Collections.FSharpList`1<ToMEHelper.BHelpers/Tree`1<ToMEHelper.BHelpers/TextParsing/TextInfo>>,System.Tuple`2<System.Int32,System.String>)", "methodShortName": "Invoke(...)", "fileIndex": 0, "line": 254,
+    "assembly": "ToMEHelper", "class": "ToMEHelper.Scraping.ApiHelpers", "reportPath": "ToMEHelper_ApiHelpers.htm", "methodName": "Microsoft.FSharp.Core.FSharpResult`2<ToMEHelper.Schema.Permadeath,System.Int32> ToMEHelper.Scraping.ApiHelpers::getPermadeathFromId(System.Int32)", "methodShortName": "getPermadeathFromId(...)", "fileIndex": 0, "line": 81,
+    "metrics": [
+      { "value": 5, "exceeded": false },
+      { "value": 0, "exceeded": false },
+      { "value": 30, "exceeded": true },
+    ]},
+  {
+    "assembly": "ToMEHelper", "class": "ToMEHelper.BHelpers", "reportPath": "ToMEHelper_BHelpers.htm", "methodName": "Microsoft.FSharp.Collections.FSharpList`1<ToMEHelper.BHelpers/Tree`1<ToMEHelper.BHelpers/TextParsing/TextInfo>> ToMEHelper.BHelpers/TextParsing/toTreeHierarchy@289::Invoke(Microsoft.FSharp.Collections.FSharpList`1<ToMEHelper.BHelpers/Tree`1<ToMEHelper.BHelpers/TextParsing/TextInfo>>,System.Tuple`2<System.Int32,System.String>)", "methodShortName": "Invoke(...)", "fileIndex": 0, "line": 292,
     "metrics": [
       { "value": 4, "exceeded": false },
       { "value": 4, "exceeded": false },

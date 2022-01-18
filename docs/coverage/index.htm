@@ -14,19 +14,19 @@
 <col />
 </colgroup>
 <tbody>
-<tr><th>Generated on:</th><td>12/17/2021 - 9:14:54 PM</td></tr>
+<tr><th>Generated on:</th><td>1/17/2022 - 8:41:22 PM</td></tr>
 <tr><th>Parser:</th><td>OpenCoverParser</td></tr>
 <tr><th>Assemblies:</th><td>1</td></tr>
-<tr><th>Classes:</th><td>14</td></tr>
-<tr><th>Files:</th><td>7</td></tr>
-<tr><th>Covered lines:</th><td>355</td></tr>
-<tr><th>Uncovered lines:</th><td>49</td></tr>
-<tr><th>Coverable lines:</th><td>404</td></tr>
-<tr><th>Total lines:</th><td>827</td></tr>
-<tr><th>Line coverage:</th><td>87.8% (355 of 404)</td></tr>
-<tr><th>Covered branches:</th><td>72</td></tr>
-<tr><th>Total branches:</th><td>119</td></tr>
-<tr><th>Branch coverage:</th><td>60.5% (72 of 119)</td></tr>
+<tr><th>Classes:</th><td>16</td></tr>
+<tr><th>Files:</th><td>9</td></tr>
+<tr><th>Covered lines:</th><td>364</td></tr>
+<tr><th>Uncovered lines:</th><td>167</td></tr>
+<tr><th>Coverable lines:</th><td>531</td></tr>
+<tr><th>Total lines:</th><td>1127</td></tr>
+<tr><th>Line coverage:</th><td>68.5% (364 of 531)</td></tr>
+<tr><th>Covered branches:</th><td>80</td></tr>
+<tr><th>Total branches:</th><td>144</td></tr>
+<tr><th>Branch coverage:</th><td>55.5% (80 of 144)</td></tr>
 </tbody>
 </table>
 <h1>Risk Hotspots</h1>
@@ -50,6 +50,34 @@
 <tbody>
 <tr>
 <td>ToMEHelper</td>
+<td><a href="ToMEHelper_ApiHelpers.htm">ToMEHelper.Scraping.ApiHelpers</a></td>
+<td title="Microsoft.FSharp.Core.FSharpResult`2&lt;ToMEHelper.Schema.ToMEClass,System.Int32&gt; ToMEHelper.Scraping.ApiHelpers::getClassFromId(System.Int32)"><a href="ToMEHelper_ApiHelpers.htm#file0_line15">getClassFromId(...)</a></td><td class="lightred right">38</td>
+<td class="lightgreen right">0</td>
+<td class="lightred right">1482</td>
+</tr>
+<tr>
+<td>ToMEHelper</td>
+<td><a href="ToMEHelper_ApiHelpers.htm">ToMEHelper.Scraping.ApiHelpers</a></td>
+<td title="System.Int32 ToMEHelper.Scraping.ApiHelpers/pairs@171::GenerateNext(System.Collections.Generic.IEnumerable`1&lt;System.Tuple`2&lt;System.String,System.String&gt;&gt;&amp;)"><a href="ToMEHelper_ApiHelpers.htm#file0_line171">GenerateNext(...)</a></td><td class="lightgreen right">8</td>
+<td class="lightgreen right">6</td>
+<td class="lightred right">72</td>
+</tr>
+<tr>
+<td>ToMEHelper</td>
+<td><a href="ToMEHelper_ApiHelpers.htm">ToMEHelper.Scraping.ApiHelpers</a></td>
+<td title="Microsoft.FSharp.Core.FSharpResult`2&lt;ToMEHelper.Schema.Difficulty,System.Int32&gt; ToMEHelper.Scraping.ApiHelpers::getDifficultyFromId(System.Int32)"><a href="ToMEHelper_ApiHelpers.htm#file0_line72">getDifficultyFromId(...)</a></td><td class="lightgreen right">7</td>
+<td class="lightgreen right">0</td>
+<td class="lightred right">56</td>
+</tr>
+<tr>
+<td>ToMEHelper</td>
+<td><a href="ToMEHelper_ApiHelpers.htm">ToMEHelper.Scraping.ApiHelpers</a></td>
+<td title="Microsoft.FSharp.Core.FSharpResult`2&lt;ToMEHelper.Schema.Campaign,System.Int32&gt; ToMEHelper.Scraping.ApiHelpers::getCampaignFromId(System.Int32)"><a href="ToMEHelper_ApiHelpers.htm#file0_line64">getCampaignFromId(...)</a></td><td class="lightgreen right">6</td>
+<td class="lightgreen right">0</td>
+<td class="lightred right">42</td>
+</tr>
+<tr>
+<td>ToMEHelper</td>
 <td><a href="ToMEHelper_ScrapeHelpers.htm">ToMEHelper.Scraping.ScrapeHelpers</a></td>
 <td title="System.Int32 ToMEHelper.Scraping.ScrapeHelpers::getClassId(ToMEHelper.Schema.ToMEClass)"><a href="ToMEHelper_ScrapeHelpers.htm#file0_line13">getClassId(...)</a></td><td class="lightred right">36</td>
 <td class="lightgreen right">0</td>
@@ -57,8 +85,15 @@
 </tr>
 <tr>
 <td>ToMEHelper</td>
+<td><a href="ToMEHelper_ApiHelpers.htm">ToMEHelper.Scraping.ApiHelpers</a></td>
+<td title="Microsoft.FSharp.Core.FSharpResult`2&lt;ToMEHelper.Schema.Permadeath,System.Int32&gt; ToMEHelper.Scraping.ApiHelpers::getPermadeathFromId(System.Int32)"><a href="ToMEHelper_ApiHelpers.htm#file0_line81">getPermadeathFromId(...)</a></td><td class="lightgreen right">5</td>
+<td class="lightgreen right">0</td>
+<td class="lightred right">30</td>
+</tr>
+<tr>
+<td>ToMEHelper</td>
 <td><a href="ToMEHelper_BHelpers.htm">ToMEHelper.BHelpers</a></td>
-<td title="Microsoft.FSharp.Collections.FSharpList`1&lt;ToMEHelper.BHelpers/Tree`1&lt;ToMEHelper.BHelpers/TextParsing/TextInfo&gt;&gt; ToMEHelper.BHelpers/TextParsing/toTreeHierarchy@251::Invoke(Microsoft.FSharp.Collections.FSharpList`1&lt;ToMEHelper.BHelpers/Tree`1&lt;ToMEHelper.BHelpers/TextParsing/TextInfo&gt;&gt;,System.Tuple`2&lt;System.Int32,System.String&gt;)"><a href="ToMEHelper_BHelpers.htm#file0_line254">Invoke(...)</a></td><td class="lightgreen right">4</td>
+<td title="Microsoft.FSharp.Collections.FSharpList`1&lt;ToMEHelper.BHelpers/Tree`1&lt;ToMEHelper.BHelpers/TextParsing/TextInfo&gt;&gt; ToMEHelper.BHelpers/TextParsing/toTreeHierarchy@289::Invoke(Microsoft.FSharp.Collections.FSharpList`1&lt;ToMEHelper.BHelpers/Tree`1&lt;ToMEHelper.BHelpers/TextParsing/TextInfo&gt;&gt;,System.Tuple`2&lt;System.Int32,System.String&gt;)"><a href="ToMEHelper_BHelpers.htm#file0_line292">Invoke(...)</a></td><td class="lightgreen right">4</td>
 <td class="lightgreen right">4</td>
 <td class="lightred right">20</td>
 </tr>
@@ -81,24 +116,26 @@
 </colgroup>
 <thead><tr><th>Name</th><th class="right">Covered</th><th class="right">Uncovered</th><th class="right">Coverable</th><th class="right">Total</th><th class="center" colspan="2">Line coverage</th><th class="center" colspan="2">Branch coverage</th></tr></thead>
 <tbody>
-<tr><th>ToMEHelper</th><th class="right">355</th><th class="right">49</th><th class="right">404</th><th class="right">1668</th><th title="LineCoverage" class="right">87.8%</th><th><table class="coverage"><tr><td class="green covered88">&nbsp;</td><td class="red covered12">&nbsp;</td></tr></table></th><th class="right">60.5%</th><th><table class="coverage"><tr><td class="green covered60">&nbsp;</td><td class="red covered40">&nbsp;</td></tr></table></th></tr>
-<tr><td><a href="ToMEHelper_BHelpers.htm">ToMEHelper.BHelpers</a></td><td class="right">135</td><td class="right">24</td><td class="right">159</td><td class="right">281</td><td title="LineCoverage" class="right">84.9%</td><td><table class="coverage"><tr><td class="green covered85">&nbsp;</td><td class="red covered15">&nbsp;</td></tr></table></td><td class="right">65%</td><td><table class="coverage"><tr><td class="green covered65">&nbsp;</td><td class="red covered35">&nbsp;</td></tr></table></td></tr>
+<tr><th>ToMEHelper</th><th class="right">364</th><th class="right">167</th><th class="right">531</th><th class="right">2133</th><th title="LineCoverage" class="right">68.5%</th><th><table class="coverage"><tr><td class="green covered68">&nbsp;</td><td class="red covered32">&nbsp;</td></tr></table></th><th class="right">55.5%</th><th><table class="coverage"><tr><td class="green covered56">&nbsp;</td><td class="red covered44">&nbsp;</td></tr></table></th></tr>
+<tr><td><a href="ToMEHelper_BHelpers.htm">ToMEHelper.BHelpers</a></td><td class="right">142</td><td class="right">31</td><td class="right">173</td><td class="right">318</td><td title="LineCoverage" class="right">82%</td><td><table class="coverage"><tr><td class="green covered82">&nbsp;</td><td class="red covered18">&nbsp;</td></tr></table></td><td class="right">62.5%</td><td><table class="coverage"><tr><td class="green covered62">&nbsp;</td><td class="red covered38">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="ToMEHelper_Say.htm">ToMEHelper.Say</a></td><td class="right">4</td><td class="right">0</td><td class="right">4</td><td class="right">53</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
-<tr><td><a href="ToMEHelper_Aggregation.htm">ToMEHelper.Schema.Aggregation</a></td><td class="right">1</td><td class="right">0</td><td class="right">1</td><td class="right">133</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
-<tr><td><a href="ToMEHelper_Talent.htm">ToMEHelper.Schema.Talent</a></td><td class="right">1</td><td class="right">0</td><td class="right">1</td><td class="right">133</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
-<tr><td><a href="ToMEHelper_TalentCategoryType.htm">ToMEHelper.Schema.TalentCategoryType</a></td><td class="right">1</td><td class="right">0</td><td class="right">1</td><td class="right">133</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">50%</td><td><table class="coverage"><tr><td class="green covered50">&nbsp;</td><td class="red covered50">&nbsp;</td></tr></table></td></tr>
-<tr><td><a href="ToMEHelper_TalentPower.htm">ToMEHelper.Schema.TalentPower</a></td><td class="right">1</td><td class="right">0</td><td class="right">1</td><td class="right">133</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
-<tr><td><a href="ToMEHelper_ToMEClass.htm">ToMEHelper.Schema.ToMEClass</a></td><td class="right">8</td><td class="right">0</td><td class="right">8</td><td class="right">133</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">88.8%</td><td><table class="coverage"><tr><td class="green covered89">&nbsp;</td><td class="red covered11">&nbsp;</td></tr></table></td></tr>
-<tr><td><a href="ToMEHelper_ToMERace.htm">ToMEHelper.Schema.ToMERace</a></td><td class="right">3</td><td class="right">0</td><td class="right">3</td><td class="right">133</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">75%</td><td><table class="coverage"><tr><td class="green covered75">&nbsp;</td><td class="red covered25">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="ToMEHelper_Aggregation.htm">ToMEHelper.Schema.Aggregation</a></td><td class="right">1</td><td class="right">0</td><td class="right">1</td><td class="right">166</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="ToMEHelper_Talent.htm">ToMEHelper.Schema.Talent</a></td><td class="right">1</td><td class="right">0</td><td class="right">1</td><td class="right">166</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="ToMEHelper_TalentCategoryType.htm">ToMEHelper.Schema.TalentCategoryType</a></td><td class="right">1</td><td class="right">0</td><td class="right">1</td><td class="right">166</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">50%</td><td><table class="coverage"><tr><td class="green covered50">&nbsp;</td><td class="red covered50">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="ToMEHelper_TalentPower.htm">ToMEHelper.Schema.TalentPower</a></td><td class="right">1</td><td class="right">0</td><td class="right">1</td><td class="right">166</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="ToMEHelper_ToMEClass.htm">ToMEHelper.Schema.ToMEClass</a></td><td class="right">8</td><td class="right">0</td><td class="right">8</td><td class="right">166</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">88.8%</td><td><table class="coverage"><tr><td class="green covered89">&nbsp;</td><td class="red covered11">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="ToMEHelper_ToMERace.htm">ToMEHelper.Schema.ToMERace</a></td><td class="right">3</td><td class="right">0</td><td class="right">3</td><td class="right">166</td><td title="LineCoverage" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">75%</td><td><table class="coverage"><tr><td class="green covered75">&nbsp;</td><td class="red covered25">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="ToMEHelper_ApiHelpers.htm">ToMEHelper.Scraping.ApiHelpers</a></td><td class="right">2</td><td class="right">85</td><td class="right">87</td><td class="right">186</td><td title="LineCoverage" class="right">2.2%</td><td><table class="coverage"><tr><td class="green covered2">&nbsp;</td><td class="red covered98">&nbsp;</td></tr></table></td><td class="right">14.2%</td><td><table class="coverage"><tr><td class="green covered14">&nbsp;</td><td class="red covered86">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="ToMEHelper_Logging.htm">ToMEHelper.Scraping.Characters.Logging</a></td><td class="right">0</td><td class="right">8</td><td class="right">8</td><td class="right">73</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red covered100">&nbsp;</td></tr></table></td><td class="right"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="ToMEHelper_Parsing.htm">ToMEHelper.Scraping.Characters.Parsing</a></td><td class="right">44</td><td class="right">1</td><td class="right">45</td><td class="right">73</td><td title="LineCoverage" class="right">97.7%</td><td><table class="coverage"><tr><td class="green covered98">&nbsp;</td><td class="red covered2">&nbsp;</td></tr></table></td><td class="right">50%</td><td><table class="coverage"><tr><td class="green covered50">&nbsp;</td><td class="red covered50">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="ToMEHelper_Logging2.htm">ToMEHelper.Scraping.CharacterVault.Logging</a></td><td class="right">0</td><td class="right">8</td><td class="right">8</td><td class="right">103</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red covered100">&nbsp;</td></tr></table></td><td class="right"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="ToMEHelper_VaultScraping.htm">ToMEHelper.Scraping.CharacterVault.VaultScraping</a></td><td class="right">56</td><td class="right">3</td><td class="right">59</td><td class="right">103</td><td title="LineCoverage" class="right">94.9%</td><td><table class="coverage"><tr><td class="green covered95">&nbsp;</td><td class="red covered5">&nbsp;</td></tr></table></td><td class="right">40%</td><td><table class="coverage"><tr><td class="green covered40">&nbsp;</td><td class="red covered60">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="ToMEHelper_HttpHelpers.htm">ToMEHelper.Scraping.HttpHelpers</a></td><td class="right">0</td><td class="right">26</td><td class="right">26</td><td class="right">44</td><td title="LineCoverage" class="right">0%</td><td><table class="coverage"><tr><td class="red covered100">&nbsp;</td></tr></table></td><td class="right">16.6%</td><td><table class="coverage"><tr><td class="green covered17">&nbsp;</td><td class="red covered83">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="ToMEHelper_ParseHelpers.htm">ToMEHelper.Scraping.ParseHelpers</a></td><td class="right">17</td><td class="right">1</td><td class="right">18</td><td class="right">36</td><td title="LineCoverage" class="right">94.4%</td><td><table class="coverage"><tr><td class="green covered94">&nbsp;</td><td class="red covered6">&nbsp;</td></tr></table></td><td class="right">50%</td><td><table class="coverage"><tr><td class="green covered50">&nbsp;</td><td class="red covered50">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="ToMEHelper_ScrapeHelpers.htm">ToMEHelper.Scraping.ScrapeHelpers</a></td><td class="right">84</td><td class="right">4</td><td class="right">88</td><td class="right">148</td><td title="LineCoverage" class="right">95.4%</td><td><table class="coverage"><tr><td class="green covered95">&nbsp;</td><td class="red covered5">&nbsp;</td></tr></table></td><td class="right">50%</td><td><table class="coverage"><tr><td class="green covered50">&nbsp;</td><td class="red covered50">&nbsp;</td></tr></table></td></tr>
 </tbody>
 </table>
 </coverage-info>
-<div class="footer">Generated by: ReportGenerator 4.2.15.0<br />12/17/2021 - 9:14:54 PM<br /><a href="https://github.com/danielpalme/ReportGenerator">GitHub</a> | <a href="http://www.palmmedia.de">www.palmmedia.de</a></div></div></div>
+<div class="footer">Generated by: ReportGenerator 4.2.15.0<br />1/17/2022 - 8:41:22 PM<br /><a href="https://github.com/danielpalme/ReportGenerator">GitHub</a> | <a href="http://www.palmmedia.de">www.palmmedia.de</a></div></div></div>
 <script type="text/javascript" src="main.js"></script>
 </body></html>

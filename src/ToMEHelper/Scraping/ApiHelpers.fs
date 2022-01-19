@@ -28,22 +28,23 @@ type ApiResultRaw =
       last_updated: string
       id_difficulty: int }
     static member ToApiResult(x: ApiResultRaw) =
+        let getMapOr k m = m |> Map.tryFind k |> Result.ofOptionWithDefault k
         { UserName = x.uname
           Version = x.id_version
           ProfileId = x.id_profile
-          Campaign = getCampaignFromId x.id_campaign
+          Campaign = getMapOr x.id_campaign campaignFromId
           Alive = x.status = "alive"
-          Race = getRaceFromId x.id_race
+          Race = getMapOr x.id_race raceFromId
           Id = x.uuid
           Level = x.level
-          Class = getClassFromId x.id_class
+          Class = getMapOr x.id_class classFromId
           Winner = x.winner = "yes"
           Title = x.title
-          Permadeath = getPermadeathFromId x.id_permadeath
+          Permadeath = getMapOr x.id_permadeath permadeathFromId
           OfficialAddons = x.official_addons = "yes"
           CharsheetApi = x.charsheet_api
           LastUpdated = x.last_updated
-          Difficulty = getDifficultyFromId x.id_difficulty }
+          Difficulty = getMapOr x.id_difficulty difficultyFromId }
 
 let baseUrl = "http://zigur.te4.org"
 
@@ -181,7 +182,7 @@ let getStringValues (field:CharacterFilterField) (x:CharacterFilter): string lis
     | CharacterFilterField.Campaign -> x.Campaign |> Option.map(getCampaignId>>string >> List.singleton)
     | CharacterFilterField.LevelMin -> x.LevelMin |> Option.map (string >> List.singleton)
     | CharacterFilterField.LevelMax -> x.LevelMax |> Option.map (string >> List.singleton)
-    | CharacterFilterField.Versions -> match x.Versions |> List.choose (getVersionId) with | [] -> None | x -> x |> List.map string |> Some
+    | CharacterFilterField.Versions -> match x.Versions |> List.choose (fun v -> versionIdMap |> Map.tryFind v) with | [] -> None | x -> x |> List.map string |> Some
     | CharacterFilterField.OnlyOfficialAddons -> x.OnlyOfficialAddons |> Option.map((function | true -> "yes" | _ -> "no")>>List.singleton)
 
 let getCharacterFindPath apiPair characterFilter =

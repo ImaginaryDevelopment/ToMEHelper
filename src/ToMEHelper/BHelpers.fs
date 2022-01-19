@@ -159,6 +159,11 @@ module Set =
         (s, items) ||> Seq.fold (fun s v -> Set.add v s)
 
 module Result =
+    let ofOptionWithDefault e =
+        function
+        | Some x -> Ok x
+        | None -> Error e
+
     let partition items =
         ((List.empty, List.empty), items)
         ||> List.fold (fun (good, bad) ->

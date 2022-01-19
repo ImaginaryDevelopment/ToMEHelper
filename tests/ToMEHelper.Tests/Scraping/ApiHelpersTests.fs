@@ -137,7 +137,13 @@ let uncategorizedTests = testList "ApiHelpers" [
             buildFieldTest CharacterFilterField.Permadeath {empty with Permadeath = Some Permadeath.Roguelike}
         )
         testCase "difficulty" ( buildFieldTest CharacterFilterField.Difficulty empty)
-
+        testCase "difficulty some" (
+            buildFieldTest CharacterFilterField.Difficulty {empty with Difficulty = Some Difficulty.Easy}
+        )
+        testCase "winner" (buildFieldTest CharacterFilterField.Winner empty)
+        testCase "winner Some" (
+            buildFieldTest CharacterFilterField.Winner {empty with Winner = Some true}
+        )
 
     ]
 ]

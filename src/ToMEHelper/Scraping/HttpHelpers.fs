@@ -36,9 +36,9 @@ let httpClient loggerOpt =
 let buildQuery queryMap (path: string) =
     let q =
         (List.empty, queryMap)
-        ||> Map.fold (fun state k v ->
+        ||> Map.fold (fun state k values ->
             let next =
-                System.Uri.EscapeDataString v |> sprintf "%s=%s" k
+                values |> List.map (System.Uri.EscapeDataString >> sprintf "%s=%s" k) |> String.concat "&"
 
             next :: state)
         |> String.concat "&"

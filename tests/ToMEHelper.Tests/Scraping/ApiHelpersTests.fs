@@ -13,6 +13,8 @@ open ToMEHelper.BHelpers
 open ToMEHelper.Scraping.ScrapeHelpers
 open ToMEHelper.Scraping.SiteSchema
 
+type CharFilterAccess<'t> = CharacterFilter -> 't
+
 [<Tests>]
 let uncategorizedTests = testList "ApiHelpers" [
     let apiPair = {
@@ -90,5 +92,52 @@ let uncategorizedTests = testList "ApiHelpers" [
             let expected = sprintf "/32514/%A/characters/get/32514/tome/%s/json?online_id=1" apiPair.Key sampleCharGuid'
             let actual = getCharPath apiPair {sampleChar with Owner = OwnerType.OnlineId 32514}
             Expect.equal actual expected null
+    ]
+    testList "getCharacterFindPath" [
+        let sut = getCharacterFindPath apiPair
+        let empty = CharacterFilter.Empty
+        let full = {
+                Permadeath = Some Permadeath.Roguelike
+                Difficulty = Some Difficulty.Easy
+                Winner = Some true
+                Race = Some ToMERace.Krog
+                Alive = Some true
+                Class = None
+                Campaign = None
+                LevelMin = None
+                LevelMax = None
+                Versions = List.empty
+                OnlyOfficialAddons = None
+        }
+        let inline charFilter (f : CharFilterAccess<_>) x = f x
+
+        // account for None and Some?
+        let inline buildFieldTest (n:CharacterFilterField) x _ =
+            let actual = sut x
+            let fieldKey = n |> getCharacterFilterFieldName |> sprintf "%s="
+            match getStringValues n x with
+            | None ->
+                let hasKey = actual.Contains fieldKey
+                Expect.isTrue (not hasKey) null
+            | Some _ ->
+                Expect.stringContains actual fieldKey null
+
+        // LevelMin = None
+        // LevelMax = None
+        // Versions = List.empty
+        // OnlyOfficialAddons = None
+        testCase "happy path"
+        <| fun _ ->
+            let expected = sprintf "%i/%A/characters/find?" apiPair.Id apiPair.Key
+            let actual = sut empty
+            Expect.equal actual expected null
+            ()
+        testCase "permadeath empty" ( buildFieldTest CharacterFilterField.Permadeath empty)
+        testCase "permadeath some" (
+            buildFieldTest CharacterFilterField.Permadeath {empty with Permadeath = Some Permadeath.Roguelike}
+        )
+        testCase "difficulty" ( buildFieldTest CharacterFilterField.Difficulty empty)
+
+
     ]
 ]

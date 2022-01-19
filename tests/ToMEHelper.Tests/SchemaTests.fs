@@ -50,6 +50,35 @@ let tomeClassTests =
             ()
     ]
 
+[<Tests>]
+let apiResultTests = testList "ApiResult" [
+    testCase "happy"
+    <| fun _ ->
+        let x: ApiResult =
+            {
+                UserName= ""
+                Version= 7
+                ProfileId= 4
+                Campaign= Ok Campaign.Maj
+                Alive= false
+                Race= Ok ToMERace.Skeleton
+                Id= System.Guid.NewGuid()
+                Level= 23
+                // Custom ints or unmapped can be errors
+                Class= Ok ToMEClass.Anorithil
+                Winner= false
+                Title= ""
+                Permadeath= Ok Permadeath.Roguelike
+                OfficialAddons= true
+                CharsheetApi= ""
+                LastUpdated= ""
+                Difficulty= Ok Easy
+            }
+        x
+        |> ApiResult.TryValidate
+        |> fun x -> Expect.isSome x null
+        ()
+]
 
 [<Tests>]
 let talentTests =

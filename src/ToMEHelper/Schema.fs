@@ -22,6 +22,8 @@ type ToMERace =
         match x with
         | KrukYeti -> "Kruk Yeti"
         | _ -> string x
+    // for LINQPad
+    member private x.ToDump() = x.GetDisplay()
 
 type ToMEClass =
     | Adventurer
@@ -70,6 +72,8 @@ type ToMEClass =
     | WrithingOne
     | Wyrmic
     // | Yeek
+    // for LINQPad
+    member private x.ToDump() = x.GetDisplay()
     member x.GetDisplay() =
         match x with
         | ArcaneBlade -> "Arcane Blade"
@@ -86,6 +90,8 @@ type Difficulty =
     | Nightmare
     | Madness
     | Insane
+    // for LINQPad
+    member private x.ToDump() = string x
 
 type OwnerType =
     | OnlineId of int
@@ -115,11 +121,15 @@ type Campaign =
     | Infinite
     | Maj
     | Orcs
+    // for LINQPad
+    member private x.ToDump() = string x
 
 type Permadeath =
     | Adventure // small # of lives
     | Exploration
     | Roguelike // 1 life
+    // for LINQPad
+    member private x.ToDump() = string x
 
 
 type ApiResult =
@@ -140,6 +150,50 @@ type ApiResult =
       CharsheetApi: string
       LastUpdated: string
       Difficulty: Result<Difficulty, int> }
+      with
+        static member TryValidate (x:ApiResult) : ValidatedApiResult option =
+            match x.Campaign, x.Race, x.Class, x.Permadeath, x.Difficulty with
+            | Ok cam, Ok r, Ok cls, Ok pd, Ok diff ->
+                Some {
+                    UserName = x.UserName
+                    Version = x.Version
+                    ProfileId = x.ProfileId
+                    Campaign = cam
+                    Alive = x.Alive
+                    Race = r
+                    Id = x.Id
+                    Level = x.Level
+                    Class = cls
+                    Winner = x.Winner
+                    Title = x.Title
+                    Permadeath = pd
+                    OfficialAddons = x.OfficialAddons
+                    CharsheetApi = x.CharsheetApi
+                    LastUpdated = x.LastUpdated
+                    Difficulty = diff
+                }
+            | _ -> None
+
+and ValidatedApiResult =
+    { UserName: string
+      Version: int
+      ProfileId: int
+      Campaign: Campaign
+      Alive: bool
+      Race: ToMERace
+      Id: System.Guid
+      Level: int
+      Class: ToMEClass
+      Winner: bool
+      Title: string
+      Permadeath: Permadeath
+      OfficialAddons: bool
+      CharsheetApi: string
+      LastUpdated: string
+      Difficulty: Difficulty }
+and ApiResultType =
+    | Valid of ValidatedApiResult
+    | Raw of ApiResult
 
 module Charsheets =
     type Prodigies = Map<string, int> // assuming prodigies only go 1/1 for now

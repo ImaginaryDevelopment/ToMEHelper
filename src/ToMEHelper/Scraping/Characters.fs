@@ -2,7 +2,7 @@
 namespace ToMEHelper.Scraping.Characters
 
 open ToMEHelper.BHelpers
-
+type CDict<'tKey,'tValue> = System.Collections.Generic.Dictionary<'tKey, 'tValue>
 module Logging =
     let mutable logger: ToMELogger option = None
 
@@ -15,6 +15,129 @@ module Logging =
         |> Option.iter (fun logger -> logger.Dump(x, description = title))
 
 open ToMEHelper.Scraping.ParseHelpers
+module RawApiCharacters =
+    type Inscription = {
+        Name:string
+        Desc:string
+        Image:string
+        Kind:string
+    }
+    type InscriptionStatus = {
+        Used:string
+        All: Inscription[]
+    }
+    type TalentX = {
+        Name:string
+        Desc:string
+        Image:string
+        Val:string
+    }
+    type TalentInfo = {
+        Mastery: string
+        List: TalentX[]
+    }
+
+    module OffenseTypes =
+        type Mainhand = {
+            crit: string
+            APR: string
+            damage: string
+            accuracy: string
+            speed: string
+        }
+        type Offhand = {
+            crit: string
+            penaly: float
+            accuracy: string
+            damage: string
+            APR: string
+            speed: string
+        }
+
+        type Mind = {
+            mindpower: float
+            crit: string
+            speed: float
+        }
+
+        type Spell = {
+            spellpower: float
+            speed: float
+            crit: string
+            cooldown: float
+        }
+
+        type Offense = {
+            mainhand: Mainhand[]
+            offhand: obj
+            mind: Mind
+            spell: Spell
+            damage_pen: CDict<string,string>
+            damage: CDict<string,string>
+        }
+
+    module CharacterInfo =
+
+        type Died = {
+            times: float
+            desc: string
+            now: string
+        }
+
+        type Info = {
+            permadeath: string
+            difficulty: string
+            size: string
+            campaign: string
+            Class: string
+            sex: string
+            race: string
+            game: string
+            addons: CDict<string,string>
+            exp: string
+            gold: string
+            died: Died
+            level: float
+            name: string
+            antimagic: bool
+        }
+    type Achievement = {
+        Name: string
+        Id: string
+        Desc: string
+        When: string
+    }
+    type Defense = {
+        Resistances: CDict<string,string>
+        Immunities: CDict<string,string>
+        Defense: CDict<string,float>
+    }
+    type Stat = {
+        Base:int
+        Value:int
+    }
+    type CharacterSheet = {
+        Inscriptions: InscriptionStatus
+        Talents: CDict<string,TalentInfo>
+        Version: string
+        Offense: OffenseTypes.Offense
+        Character: CharacterInfo.Info
+        Resources: obj
+        Effects: obj[]
+        Vision: obj
+        ``Primary Stats``: CDict<string,Stat>
+        Achievements: Achievement[]
+        Hidden: obj
+        Sections: string[]
+        Defense: Defense
+        Healing: obj
+        Last_Messages: obj
+        Quests: obj[]
+        Speeds: CDict<string,float>
+        Winner: obj
+        Equipment: obj
+        Inventory: obj[]
+    }
 
 module Parsing =
     open ToMEHelper.Schema

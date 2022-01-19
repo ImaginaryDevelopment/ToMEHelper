@@ -103,7 +103,7 @@ let uncategorizedTests = testList "ApiHelpers" [
         //     )
     ]
     testList "getCharacterFindPath" [
-        let sut = getCharacterFindPath apiPair
+        let sut = getCharacterFindPath
         let empty = CharacterFilter.Empty
         let full = {
                 Permadeath = Some Permadeath.Roguelike
@@ -137,7 +137,7 @@ let uncategorizedTests = testList "ApiHelpers" [
         // OnlyOfficialAddons = None
         testCase "happy path"
         <| fun _ ->
-            let expected = sprintf "%i/%A/characters/find?" apiPair.Id apiPair.Key
+            let expected = "characters/find?"
             let actual = sut empty
             Expect.equal actual expected null
             ()

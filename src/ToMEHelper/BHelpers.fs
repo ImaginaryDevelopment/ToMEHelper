@@ -170,6 +170,17 @@ module Result =
             function
             | Ok x -> x :: good, bad
             | Error e -> good, e :: bad)
+    // return all unwrapped if all are ok or all errors
+    let foldIfAll items =
+        (Ok List.empty, items)
+        ||> List.fold (fun goods item ->
+            match goods, item with
+            | Ok goods, Ok x -> Ok (x::goods)
+            | Ok _, Error x -> Error [x]
+            | Error e, Error x -> Error (x::e)
+            | Error e, Ok _ -> Error e
+        )
+
 
 module Map =
     let addItem k x (m: Map<_, 't list>) =
@@ -253,37 +264,37 @@ module Async =
 
         retry retries List.empty
 
-type Tree<'t> = { Value: 't; Children: Tree<'t> list }
+// type Tree<'t> = { Value: 't; Children: Tree<'t> list }
 
-module Tree =
-    let rec map f { Value = x; Children = trees } =
-        { Value = f x
-          Children = trees |> List.map (map f) }
+// module Tree =
+//     let rec map f { Value = x; Children = trees } =
+//         { Value = f x
+//           Children = trees |> List.map (map f) }
 
-    let leaf x = { Value = x; Children = List.empty }
-    // untested and unused
-    let rec tryFind f root =
-        if f root.Value then
-            Some root
-        else
-            root.Children
-            |> Seq.choose (tryFind f)
-            |> Seq.tryHead
+//     let leaf x = { Value = x; Children = List.empty }
+//     // untested and unused
+//     let rec tryFind f root =
+//         if f root.Value then
+//             Some root
+//         else
+//             root.Children
+//             |> Seq.choose (tryFind f)
+//             |> Seq.tryHead
 
-    let rec count { Value = _; Children = children } : int =
-        children |> List.map count |> List.sum |> (+) 1
+//     let rec count { Value = _; Children = children } : int =
+//         children |> List.map count |> List.sum |> (+) 1
 
-    let rec generateFromTree (ind, i) f x =
-        [ yield
-            f x.Value
-            |> sprintf "%s%s" (String.replicate i ind)
-          yield!
-              x.Children
-              |> List.collect (generateFromTree (ind, i + 1) f) ]
+//     let rec generateFromTree (ind, i) f x =
+//         [ yield
+//             f x.Value
+//             |> sprintf "%s%s" (String.replicate i ind)
+//           yield!
+//               x.Children
+//               |> List.collect (generateFromTree (ind, i + 1) f) ]
 
-    let generateFromForest (ind, i) f items =
-        items
-        |> List.collect (generateFromTree (ind, i) f)
+//     let generateFromForest (ind, i) f items =
+//         items
+//         |> List.collect (generateFromTree (ind, i) f)
 
 [<Struct>]
 type OptionalBuilder =

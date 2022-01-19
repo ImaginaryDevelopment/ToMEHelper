@@ -27,7 +27,7 @@ type ApiResultRaw =
       charsheet_api: string
       last_updated: string
       id_difficulty: int }
-    static member ToApiResult(x: ApiResultRaw) =
+    static member ToApiResult(x: ApiResultRaw) : ApiResult =
         let getMapOr k m = m |> Map.tryFind k |> Result.ofOptionWithDefault k
         { UserName = x.uname
           Version = x.id_version
@@ -53,14 +53,14 @@ let getCharPath apiPair characterId =
     | OnlineId i -> sprintf "/%i/%A/characters/get/%i/tome/%A/json?online_id=1" apiPair.Id apiPair.Key i characterId.Id
     | OwnerId i -> sprintf "/%i/%A/characters/get/%i/tome/%A/json" apiPair.Id apiPair.Key i characterId.Id
 
-// type RawMapType = System.Collections.Generic.Dictionary<string, int>
+type RawMapType = System.Collections.Generic.Dictionary<string, int>
 // http://zigur.te4.org/#api_vault_get_filters
 // the raw result of asking the api what filters are available
-// type CharacterFilterMeta =
-//     { id_version: RawMapType
-//       id_race: RawMapType
-//       id_difficulty: RawMapType
-//       winner: string [] }
+type CharacterFilterMeta =
+    { id_version: RawMapType
+      id_race: RawMapType
+      id_difficulty: RawMapType
+      winner: string [] }
 
 [<RequireQualifiedAccess>]
 type CharacterFilterField =
@@ -168,7 +168,6 @@ let toStringMap (fGet: CharacterFilterField -> CharacterFilter -> (string list) 
             let! fn = getCharacterFilterFieldName f |> Option.ofValueString
             return (fn,v)
         }
-
     )
 
 let getStringValues (field:CharacterFilterField) (x:CharacterFilter): string list option =
@@ -185,16 +184,22 @@ let getStringValues (field:CharacterFilterField) (x:CharacterFilter): string lis
     | CharacterFilterField.Versions -> match x.Versions |> List.choose (fun v -> versionIdMap |> Map.tryFind v) with | [] -> None | x -> x |> List.map string |> Some
     | CharacterFilterField.OnlyOfficialAddons -> x.OnlyOfficialAddons |> Option.map((function | true -> "yes" | _ -> "no")>>List.singleton)
 
-let getCharacterFindPath apiPair characterFilter =
+let getCharacterFindPath characterFilter =
     let pairs =
         toStringMap getStringValues characterFilter
         |> Map.ofSeq
 
     // "/:api_id/:api_key/characters/find"
-    let path =
-        sprintf "%i/%A/characters/find" apiPair.Id apiPair.Key
+    let path = "characters/find"
 
     HttpHelpers.buildQuery pairs path
 
 let deserializeApiResults (x: string) =
     System.Text.Json.JsonSerializer.Deserialize<ApiResultRaw []>(json = x)
+
+// let getCharacterPath apiPair (x:ApiResultType) =
+//     let chApi = match x with | Valid x -> x.CharsheetApi | Raw x -> x.CharsheetApi
+//     // sometimes the charsheet api seems to include the api pair?
+//     let leading = sprintf "%i/%A" apiPair.Id apiPair.Key
+//     if chApi.TrimStart('/').StartsWith leading then chApi
+//     else sprintf "%s%s" leading chApi

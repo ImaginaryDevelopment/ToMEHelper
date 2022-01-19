@@ -266,12 +266,45 @@ let tuple2Tests =
             if System.Int32.MaxValue = x then
                 Expect.isNone actual null
             else actual |> Assert.equal (Some (x,x+1))
+        testCase "ofIncr Sad"
+        <| fun _ ->
+            let actual = Tuple2.ofIncr System.Int32.MaxValue
+            let expected = None
+            Expect.equal actual expected null
         testProperty "ofDecr"
         <| fun x ->
             let actual = Tuple2.ofDecr x
             if System.Int32.MinValue = x then
                 Expect.isNone actual null
             else actual |> Assert.equal (Some (x, x-1))
+        testCase "ofDecr Sad"
+        <| fun _ ->
+            let actual = Tuple2.ofDecr System.Int32.MinValue
+            let expected = None
+            Expect.equal actual expected null
+        testList "optionOfPair" [
+            let sut = Tuple2.optionOfPair
+            testCase "can be happy"
+            <| fun _ ->
+                let expected = Some(1,2)
+                let actual = sut (Some 1, Some 2)
+                Expect.equal actual expected null
+            testCase "can none left"
+            <| fun _ ->
+                let expected = None
+                let actual = sut (None, Some 2)
+                Expect.equal actual expected null
+            testCase "can none right"
+            <| fun _ ->
+                let expected = None
+                let actual = sut (Some 1, None)
+                Expect.equal actual expected null
+            testCase "can none both"
+            <| fun _ ->
+                let expected = None
+                let actual = sut (None, None)
+                Expect.equal actual expected null
+        ]
 
         testList "optionOfFst" [
             testCase "can be happy"
@@ -296,10 +329,42 @@ let tuple2Tests =
                 |> Assert.equal None
         ]
     ]
-
+module Tuple2HelpersTests =
+    open Tuple2.Helpers
+    [<Tests>]
+    let helpersTests= testList "Helpers" [
+        testCase "compAsc"
+        <| fun _ ->
+            match 1,2 with
+            | CompAsc _ -> ()
+            | x -> failwithf "%A" x
+        testCase "compDesc"
+        <| fun _ ->
+            match 2,1 with
+            | CompDesc _ -> ()
+            | x -> failwithf "%A" x
+        testCase "compEq"
+        <| fun _ ->
+            match 2,2 with
+            | CompEq i -> Expect.equal i 2 null
+            | x -> failwithf "%A" x
+        testCase "optBoth"
+        <| fun _ ->
+            match Some 1, Some 2 with
+            | OptBoth(x,y) -> Expect.equal x 1 null; Expect.equal y 2 null;
+            | x -> failwithf "%A" x
+    ]
 [<Tests>]
 let resultTests=
     testList "Result" [
+        testList "ofOptionWithDefault" [
+            testCase "can be happy"
+            <| fun _ ->
+                let v = "value"
+                let expected = Ok v
+                let actual = Some v |> Result.ofOptionWithDefault (Error "x")
+                Expect.equal actual expected null
+        ]
         testList "partition" [
             testCase "works on empty elements"
             <| fun _ ->
@@ -441,99 +506,6 @@ let asyncTests =
                 Expect.equal actual (Ok expected) null
         ]
     ]
-
-[<Tests>]
-let treeTests = testList "Tree" [
-    testList "map" [
-        testCase "identity"
-        <| fun _ ->
-            let expected = Tree.leaf 1
-            expected
-            |> Tree.map id
-            |> Assert.equal expected
-        testCase "addition"
-        <| fun _ ->
-            let expected = {Value=2;Children=[Tree.leaf 3; Tree.leaf 4]}
-            {Value=1;Children = [Tree.leaf 2;Tree.leaf 3]}
-            |> Tree.map ((+) 1)
-            |> fun x -> x
-            |> Assert.equal expected
-    ]
-
-    testCase "leaf"
-    <| fun _ ->
-        let expected = {Value=2;Children=List.empty}
-        Tree.leaf 2
-        |> Assert.equal expected
-
-    testList "tryFind" [
-        testCase "notFound"
-        <| fun _ ->
-            Tree.leaf 2
-            |> Tree.tryFind(fun x -> x = 3)
-            |> flip Expect.isNone null
-        let testCanFind name target tree =
-            testCase name
-            <| fun _ ->
-                tree
-                |> Tree.tryFind(fun x -> x = target.Value)
-                |> Assert.equal (Some target)
-        testCanFind "root" (Tree.leaf 2) (Tree.leaf 2)
-        testCanFind "first child"(Tree.leaf 2) {Value=1;Children=[Tree.leaf 2]}
-        testCanFind "can find in secondary child"(Tree.leaf 2) {Value=4;Children=[Tree.leaf 3;Tree.leaf 2]}
-    ]
-
-    testList "count" [
-        let testTreeLength name expected tree =
-            testCase name
-            <| fun _ ->
-                tree
-                |> Tree.count
-                |> Assert.equal expected
-        testTreeLength "single" 1 (Tree.leaf 1)
-        testProperty "non-parents" (fun i -> {Value=0;Children = List.init (abs i) Tree.leaf} |> Tree.count |> Assert.equal (abs i + 1))
-        testTreeLength "peers" 3 {Value=2;Children=[Tree.leaf 2; Tree.leaf 2]}
-    ]
-    let treeCases = [
-        "happy"," ",0, string, Tree.leaf 2, ["2"]
-        "can handle children"," ",0,string,Tree.leaf 2,["2"]
-        "indented children", "  ",1,string,{Value=2;Children=[Tree.leaf 3]}, ["  2";"    3"]
-        "tabbed children", "\t",1,string,{Value=2;Children=[Tree.leaf 3]}, ["\t2";"\t\t3"]
-        "sibling children", " ",0,string,{Value=2;Children=[Tree.leaf 3;Tree.leaf 4]},["2"; " 3"; " 4"]
-    ]
-    testList "generateFromTree" [
-        // testCase "can be happy"
-        // <| fun _ ->
-        //     Tree.generateFromTree (" ",0) string (Tree.leaf 2)
-        //     |> Assert.equal [ "2" ]
-        // testCase "can handle children"
-        // <| fun _ ->
-        //     Tree.generateFromTree (" ",0) string ({Value=2;Children=[Tree.leaf 3]})
-        //     |> Assert.equal ["2";" 3"]
-        // testCase "can handle indented children"
-        // <| fun _ ->
-        //     Tree.generateFromTree (" ",1) string ({Value=2;Children=[Tree.leaf 3]})
-        //     |> Assert.equal [" 2";"  3"]
-        // testCase "can handle sibling children"
-        // <| fun _ ->
-        //     Tree.generateFromTree(" ",0) string ({Value=2;Children=[Tree.leaf 3;Tree.leaf 4]})
-        //     |> Assert.equal ["2"; " 3"; " 4"]
-        yield! treeCases |> List.map(fun (name,ind,i,f,tree,expected) ->
-            testCase name
-            <| fun _ ->
-                Tree.generateFromTree (ind,i) string tree
-                |> Assert.equal expected
-        )
-    ]
-    testList "generateFromForest" [
-        yield! treeCases |> List.map(fun (name,ind,i,f,tree,expected) ->
-            testCase name
-            <| fun _ ->
-                Tree.generateFromForest (ind,i) string [tree]
-                |> Assert.equal expected
-        )
-    ]
-]
 
 [<Tests>]
 let optionBuilderTests =

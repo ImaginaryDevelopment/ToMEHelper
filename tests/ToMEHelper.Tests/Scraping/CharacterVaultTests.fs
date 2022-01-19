@@ -56,6 +56,14 @@ module VaultScrapingTests =
                 let actual = clFromRaw input
                 Expect.equal actual (Some expected) null
             )
+            testCase "no name"
+            <| fun _ ->
+                let actual = clFromRaw {User = "john"; Name= ""; Path = ""}
+                Expect.equal actual None null
+            testCase "no level"
+            <| fun _ ->
+                let actual = clFromRaw {User = "john"; Name= "gozer the level "; Path = ""}
+                Expect.equal actual None null
         ]
         testList "getCharacters" [
             let doc = sprintf "<html><body><div id=\"node\"><div id=\"characters\"><table><tbody>%s</tbody></table></div></div></body></html>" sample

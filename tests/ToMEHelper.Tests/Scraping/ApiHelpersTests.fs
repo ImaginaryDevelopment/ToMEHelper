@@ -93,6 +93,15 @@ let uncategorizedTests = testList "ApiHelpers" [
             let actual = getCharPath apiPair {sampleChar with Owner = OwnerType.OnlineId 32514}
             Expect.equal actual expected null
     ]
+    testList "Meta" [
+        // yield! CharacterFilterField.All
+        //     |> List.map(
+        //             function
+        //             | CharacterFilterField.Permadeath -> Meta.PermadeathProp |> ignore
+        //             | CharacterFilterField.
+
+        //     )
+    ]
     testList "getCharacterFindPath" [
         let sut = getCharacterFindPath apiPair
         let empty = CharacterFilter.Empty
@@ -102,12 +111,12 @@ let uncategorizedTests = testList "ApiHelpers" [
                 Winner = Some true
                 Race = Some ToMERace.Krog
                 Alive = Some true
-                Class = None
-                Campaign = None
-                LevelMin = None
-                LevelMax = None
-                Versions = List.empty
-                OnlyOfficialAddons = None
+                Class = Some ToMEClass.Solipsist
+                Campaign = Some Campaign.Maj
+                LevelMin = Some 20
+                LevelMax = Some 60
+                Versions = [ "tome-1.7.4" ]
+                OnlyOfficialAddons = Some true
         }
         let inline charFilter (f : CharFilterAccess<_>) x = f x
 
@@ -132,18 +141,12 @@ let uncategorizedTests = testList "ApiHelpers" [
             let actual = sut empty
             Expect.equal actual expected null
             ()
-        testCase "permadeath empty" ( buildFieldTest CharacterFilterField.Permadeath empty)
-        testCase "permadeath some" (
-            buildFieldTest CharacterFilterField.Permadeath {empty with Permadeath = Some Permadeath.Roguelike}
-        )
-        testCase "difficulty" ( buildFieldTest CharacterFilterField.Difficulty empty)
-        testCase "difficulty some" (
-            buildFieldTest CharacterFilterField.Difficulty {empty with Difficulty = Some Difficulty.Easy}
-        )
-        testCase "winner" (buildFieldTest CharacterFilterField.Winner empty)
-        testCase "winner Some" (
-            buildFieldTest CharacterFilterField.Winner {empty with Winner = Some true}
-        )
-
+        yield! CharacterFilterField.All
+            |> List.collect(fun field ->
+                [
+                    testCase (sprintf "%A empty" field) (buildFieldTest field empty)
+                    testCase (sprintf "%A Some" field) (buildFieldTest field full)
+                ]
+            )
     ]
 ]

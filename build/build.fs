@@ -11,6 +11,8 @@ open Fake.Api
 open Fake.BuildServer
 open Argu
 
+let coverageThresholdPercent = 65
+
 let environVarAsBoolOrDefault varName defaultValue =
     let truthyConsts = [
         "1"
@@ -58,7 +60,6 @@ let srcAndTest =
 let distDir = __SOURCE_DIRECTORY__ </> ".." </> "dist"
 let distGlob = distDir </> "*.nupkg"
 
-let coverageThresholdPercent = 70
 let coverageReportDir =  __SOURCE_DIRECTORY__ </> ".." </> "docs" </> "coverage"
 
 

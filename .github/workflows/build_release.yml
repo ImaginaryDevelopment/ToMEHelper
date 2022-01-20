@@ -1,0 +1,51 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      targetv:
+        description: Release version number
+      email:
+        description: git email
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        # os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.x'
+    # # Not specifying a version will attempt to install via global.json
+    # - name: Use .NET Core global.json
+    #   uses: actions/setup-dotnet@v1
+    - run: 'dir env:'
+    - run: dotnet --version
+    - run: dotnet --list-sdks
+    - run: dotnet tool restore
+
+    - name: Build
+      if: runner.os == 'Windows'
+      run: ./build.cmd release ${{ github.event.inputs.targetv }}
+      env:
+        # Work around https://github.com/actions/setup-dotnet/issues/29
+        DOTNET_ROOT: ${{ runner.tool_cache }}/dncs/${{ matrix.dotnet }}/x64
+        CI: true
+    # https://stackoverflow.com/questions/57921401/push-to-origin-from-github-action/58393457#58393457
+    - name: Check for modified files
+        id: git-check
+        run: echo ::set-output name=modified::$(if [ -n "$(git status --porcelain)" ]; then echo "true"; else echo "false"; fi)
+
+    # we don't know if the build.fs push on git release target will automatically do this
+    # - name: Update changes in GitHub repository
+    #     if: steps.git-check.outputs.modified == 'true'
+    #     run:  |
+    #       git config --global user.name 'Brandon Dimperio'
+    #       git config --global user.email ''
+    #       git add -A
+    #       git commit -m '[automated commit] add configs generated using jsonnet & GitHub workflow'
+    #       git push

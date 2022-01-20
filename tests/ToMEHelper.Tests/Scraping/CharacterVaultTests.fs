@@ -24,8 +24,8 @@ let loggingTests = testList "CharacterVault Logging" [
     <| fun _ ->
         Logging.logger <- Some {
             new ToMEHelper.BHelpers.ToMELogger with
-                member x.Dump(_) = ()
-                member x.Dump(_,_title) = ()
+                member _.Dump(value) = value
+                member _.Dump(_,_title) = ()
         }
         ToMEHelper.Scraping.CharacterVault.Logging.dump "hello"
         ToMEHelper.Scraping.CharacterVault.Logging.dumpt "title" "hello"

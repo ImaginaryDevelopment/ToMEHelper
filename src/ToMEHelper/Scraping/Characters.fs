@@ -2,19 +2,22 @@
 namespace ToMEHelper.Scraping.Characters
 
 open ToMEHelper.BHelpers
+
 type CDict<'tKey,'tValue> = System.Collections.Generic.Dictionary<'tKey, 'tValue>
+
 module Logging =
     let mutable logger: ToMELogger option = None
 
     let inline dump (x: 't) =
         logger
-        |> Option.iter (fun logger -> logger.Dump(x))
+        |> Option.iter (fun logger -> logger.Dump(x) |> ignore)
 
     let inline dumpt title x =
         logger
         |> Option.iter (fun logger -> logger.Dump(x, description = title))
 
 open ToMEHelper.Scraping.ParseHelpers
+
 module RawApiCharacters =
     type Inscription = {
         Name:string
@@ -69,13 +72,18 @@ module RawApiCharacters =
 
         type Offense = {
             mainhand: Mainhand[]
-            offhand: obj
+            offhand: Offhand[] // has penaly which will probably be renamed penalty eventually
             mind: Mind
             spell: Spell
             damage_pen: CDict<string,string>
             damage: CDict<string,string>
         }
 
+    type InventoryItem = {
+        Name: string
+        Desc: string
+        Image: string
+    }
     module CharacterInfo =
 
         type Died = {
@@ -114,7 +122,8 @@ module RawApiCharacters =
     }
     type Stat = {
         Base:int
-        Value:int
+        // found a willpower value that was not a whole number
+        Value:float
     }
     type CharacterSheet = {
         Inscriptions: InscriptionStatus
@@ -135,9 +144,29 @@ module RawApiCharacters =
         Quests: obj[]
         Speeds: CDict<string,float>
         Winner: obj
-        Equipment: obj
-        Inventory: obj[]
+        Equipment: CDict<string,obj[]>
+        Inventory: InventoryItem[]
     }
+module CharacterApi =
+    open RawApiCharacters
+    /// strips questionable/problematic api output issues before attempting
+    let deserializeApiCharacter fSettings (x:string) : CharacterSheet =
+        let jsonOpts =
+            System.Text.Json.JsonSerializerOptions(PropertyNameCaseInsensitive = true)
+            |> fSettings
+        let f (x:string) = System.Text.Json.JsonSerializer.Deserialize<CharacterSheet>(json = x,options= jsonOpts)
+        let replaceEmptyObj propName x =
+            x
+            |> replace (sprintf "\"%s\":{}" propName) (sprintf "\"%s\":[]" propName)
+        x
+        // |> replace "\"mainhand\":{}" "\"mainhand\":[]"
+        |> replaceEmptyObj "mainhand"
+        |> replaceEmptyObj "offhand"
+        |> replaceEmptyObj "achievements"
+        |> replaceEmptyObj "effects"
+        |> replaceEmptyObj "quests"
+        |> replaceEmptyObj "inventory"
+        |> f
 
 module Parsing =
     open ToMEHelper.Schema

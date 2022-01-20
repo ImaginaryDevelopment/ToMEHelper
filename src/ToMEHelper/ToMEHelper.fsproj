@@ -23,6 +23,7 @@
     <Compile Include="Scraping\ParseHelpers.fs" />
     <Compile Include="Scraping\Characters.fs" />
     <Compile Include="Scraping\CharacterVault.fs" />
+    <Compile Include="Scraping\ApiSamples.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

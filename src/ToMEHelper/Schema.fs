@@ -202,6 +202,9 @@ module Charsheets =
         { StatName: string
           Base: int
           Effective: int }
+        with
+            member private x.ToDump() =
+                sprintf "%s: %i (base %i)" x.StatName x.Effective x.Base
 
     type StatCharsheet = StatSummary list
 

@@ -80,17 +80,15 @@ let uncategorizedTests = testList "ApiHelpers" [
         ]
     ]
     testList "getCharPath" [
-        let apiId = 32514
-        let charOwnerId = 31919
         testCase "can be happy" (fun _ ->
-            let expected = sprintf "/32514/%A/characters/get/31919/tome/%s/json" apiPair.Key sampleCharGuid'
-            let actual = getCharPath apiPair sampleChar
+            let expected = sprintf "characters/get/31919/tome/%s/json" sampleCharGuid'
+            let actual = getCharPath sampleChar
             Expect.equal actual expected null
         )
         testCase "can be happy with onlineId"
         <| fun _ ->
-            let expected = sprintf "/32514/%A/characters/get/32514/tome/%s/json?online_id=1" apiPair.Key sampleCharGuid'
-            let actual = getCharPath apiPair {sampleChar with Owner = OwnerType.OnlineId 32514}
+            let expected = sprintf "characters/get/32514/tome/%s/json?online_id=1" sampleCharGuid'
+            let actual = getCharPath {sampleChar with Owner = OwnerType.OnlineId 32514}
             Expect.equal actual expected null
     ]
     testList "Meta" [
@@ -101,6 +99,34 @@ let uncategorizedTests = testList "ApiHelpers" [
         //             | CharacterFilterField.
 
         //     )
+    ]
+    testList "getPageStringValues" [
+        let sut = ToMEHelper.Scraping.ApiHelpers.getPageStringValues
+        testCase "empty"
+        <| fun _ ->
+            let expected = Map.empty
+            let actual =
+                {   Max = None
+                    Page = None
+                    Order = null
+                }
+                |> sut
+
+            Expect.equal actual expected null
+        testCase "full"
+        <| fun _ ->
+            let expected = Map [
+                "max", string 2
+                "page", string 3
+            ]
+            let actual =
+                {
+                    Max = Some 2
+                    Page = Some 3
+                    Order = null
+                }
+                |> sut
+            Expect.equal actual expected null
     ]
     testList "getCharacterFindPath" [
         let sut = getCharacterFindPath
@@ -117,12 +143,13 @@ let uncategorizedTests = testList "ApiHelpers" [
                 LevelMax = Some 60
                 Versions = [ "tome-1.7.4" ]
                 OnlyOfficialAddons = Some true
+                ProfileId = Some 31919
         }
         let inline charFilter (f : CharFilterAccess<_>) x = f x
 
         // account for None and Some?
         let inline buildFieldTest (n:CharacterFilterField) x _ =
-            let actual = sut x
+            let actual = sut x None
             let fieldKey = n |> getCharacterFilterFieldName |> sprintf "%s="
             match getStringValues n x with
             | None ->
@@ -131,14 +158,10 @@ let uncategorizedTests = testList "ApiHelpers" [
             | Some _ ->
                 Expect.stringContains actual fieldKey null
 
-        // LevelMin = None
-        // LevelMax = None
-        // Versions = List.empty
-        // OnlyOfficialAddons = None
         testCase "happy path"
         <| fun _ ->
             let expected = "characters/find?"
-            let actual = sut empty
+            let actual = sut empty None
             Expect.equal actual expected null
             ()
         yield! CharacterFilterField.All

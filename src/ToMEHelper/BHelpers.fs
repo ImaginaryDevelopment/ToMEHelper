@@ -1,7 +1,7 @@
 module ToMEHelper.BHelpers
 
 type ToMELogger =
-    abstract Dump<'t> : 't -> unit
+    abstract Dump<'t> : 't -> 't
     abstract Dump<'t> : 't * description: string -> unit
 
 let (|ValueString|Whitespace|EmptyString|NullString|) =
@@ -14,6 +14,8 @@ let (|ValueString|Whitespace|EmptyString|NullString|) =
 
 let flip f x y = f y x
 let trim (x: string) = x.Trim()
+let replace (delimiter:string) (replacement:string) (x:string) =
+    x.Replace(delimiter,replacement)
 
 let failNonValue name =
     function
@@ -84,10 +86,11 @@ module StringHelpers =
         |> Array.tryFind (fun uc -> equalsI uc.Name x)
         |> Option.map (fun uc -> FSharp.Reflection.FSharpValue.MakeUnion(uc, Array.empty) :?> 't)
 
-
-
-
 module Option =
+    let ofUnsafe (x:'t) =
+        if System.Object.ReferenceEquals(x,null) then
+            None
+        else Some x
     let ofValueString =
         function
         | ValueString x -> Some x

@@ -7,9 +7,9 @@ open ToMEHelper.BHelpers.StringHelpers
 module Logging =
     let mutable logger: ToMELogger option = None
 
-    let inline dump (x: 't) =
+    let inline dump<'t> (value: 't) =
         logger
-        |> Option.iter (fun logger -> logger.Dump(x))
+        |> Option.iter (fun logger -> logger.Dump(value) |> ignore)
 
     let inline dumpt title x =
         logger
@@ -54,7 +54,8 @@ module VaultScraping =
 
             let _userhref, uname = userTd |> getHrefWithInner
             let cHref, cName = charTd |> getHrefWithInner
-            Logging.dump (cName, cHref)
+
+            Logging.dump<_*_>(cName, cHref) |> ignore
 
             let value: CharacterLinkRaw =
                 { User = uname

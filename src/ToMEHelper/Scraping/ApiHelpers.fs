@@ -48,18 +48,22 @@ type ApiResultRaw =
 
 let baseUrl = "http://zigur.te4.org"
 
-let getCharPath apiPair characterId =
+let getCharPath characterId =
     match characterId.Owner with
-    | OnlineId i -> sprintf "/%i/%A/characters/get/%i/tome/%A/json?online_id=1" apiPair.Id apiPair.Key i characterId.Id
-    | OwnerId i -> sprintf "/%i/%A/characters/get/%i/tome/%A/json" apiPair.Id apiPair.Key i characterId.Id
+    | OnlineId i -> sprintf "characters/get/%i/tome/%A/json?online_id=1" i characterId.Id
+    | OwnerId i -> sprintf "characters/get/%i/tome/%A/json" i characterId.Id
 
 type RawMapType = System.Collections.Generic.Dictionary<string, int>
 // http://zigur.te4.org/#api_vault_get_filters
 // the raw result of asking the api what filters are available
 type CharacterFilterMeta =
     { id_version: RawMapType
+      id_profile: int
       id_race: RawMapType
       id_difficulty: RawMapType
+      id_campaign: RawMapType
+      status: string list
+      level_min: int
       winner: string [] }
 
 [<RequireQualifiedAccess>]
@@ -75,6 +79,7 @@ type CharacterFilterField =
     | LevelMax
     | Versions
     | OnlyOfficialAddons
+    | ProfileId
     with
         static member All = [
             CharacterFilterField.Permadeath
@@ -88,7 +93,14 @@ type CharacterFilterField =
             CharacterFilterField.LevelMax
             CharacterFilterField.Versions
             CharacterFilterField.OnlyOfficialAddons
+            CharacterFilterField.ProfileId
         ]
+
+type Paging = {
+    Page:int option
+    Max: int option
+    Order: obj
+}
 
 // not currently supporting custom classes/difficulties/etc
 type CharacterFilter =
@@ -102,6 +114,7 @@ type CharacterFilter =
       LevelMin: int option
       LevelMax: int option
       Versions: string list
+      ProfileId: int option
       OnlyOfficialAddons: bool option }
       with
         static member Empty =
@@ -117,6 +130,7 @@ type CharacterFilter =
                 LevelMax = None
                 Versions = List.empty
                 OnlyOfficialAddons = None
+                ProfileId = None
             }
 
 let getCharacterFilterFieldName =
@@ -132,6 +146,7 @@ let getCharacterFilterFieldName =
     | CharacterFilterField.LevelMax -> "level_max"
     | CharacterFilterField.Versions -> "id_version"
     | CharacterFilterField.OnlyOfficialAddons -> "only_official_addons"
+    | CharacterFilterField.ProfileId -> "id_profile"
 
 module Meta =
     type Prop<'t> = CharacterFilterField * (CharacterFilter -> 't) * ('t -> CharacterFilter -> CharacterFilter)
@@ -157,6 +172,8 @@ module Meta =
         CharacterFilterField.Versions, (fun x -> x.Versions), fun y x -> {x with Versions = y}
     let OnlyOfficialAddonsProp: Prop<_> =
         CharacterFilterField.OnlyOfficialAddons, (fun x -> x.OnlyOfficialAddons), fun y x -> {x with OnlyOfficialAddons = y}
+    let ProfileIdProp: Prop<_> =
+        CharacterFilterField.ProfileId, (fun x -> x.ProfileId), fun y x -> {x with ProfileId = y}
     let getPropGetter ((_,g,_):Prop<_>) = g
     let getPropSetter((_,_,s): Prop<_>) = s
 
@@ -183,23 +200,50 @@ let getStringValues (field:CharacterFilterField) (x:CharacterFilter): string lis
     | CharacterFilterField.LevelMax -> x.LevelMax |> Option.map (string >> List.singleton)
     | CharacterFilterField.Versions -> match x.Versions |> List.choose (fun v -> versionIdMap |> Map.tryFind v) with | [] -> None | x -> x |> List.map string |> Some
     | CharacterFilterField.OnlyOfficialAddons -> x.OnlyOfficialAddons |> Option.map((function | true -> "yes" | _ -> "no")>>List.singleton)
+    | CharacterFilterField.ProfileId -> x.ProfileId |> Option.map(string >> List.singleton)
 
-let getCharacterFindPath characterFilter =
+let getPageStringValues (pg:Paging) =
+    Map [
+        match pg.Max with
+        | None -> ()
+        | Some m when m < 1 -> failwithf "Invalid page count"
+        | Some m -> yield "max", string m
+        match pg.Page with
+        | None -> ()
+        | Some m when m < 0 -> failwithf "Invalid page index"
+        | Some m -> yield "page", string m
+    ]
+
+let getCharacterFindPath characterFilter pagingOpt =
     let pairs =
-        toStringMap getStringValues characterFilter
-        |> Map.ofSeq
+        let m =
+            toStringMap getStringValues characterFilter
+            |> Map.ofSeq
+        match pagingOpt with
+        | None -> m
+        | Some (pg:Paging) ->
+            m
+            |> Map.mergeAsList (getPageStringValues pg)
+
 
     // "/:api_id/:api_key/characters/find"
     let path = "characters/find"
 
     HttpHelpers.buildQuery pairs path
 
-let deserializeApiResults (x: string) =
-    System.Text.Json.JsonSerializer.Deserialize<ApiResultRaw []>(json = x)
+let getProfileIdFromOnlinePath onlineId =
+    // http://zigur.te4.org/profile/from_online/31922
+    sprintf "profile/from_online/%i" onlineId
 
-// let getCharacterPath apiPair (x:ApiResultType) =
-//     let chApi = match x with | Valid x -> x.CharsheetApi | Raw x -> x.CharsheetApi
-//     // sometimes the charsheet api seems to include the api pair?
-//     let leading = sprintf "%i/%A" apiPair.Id apiPair.Key
-//     if chApi.TrimStart('/').StartsWith leading then chApi
-//     else sprintf "%s%s" leading chApi
+let deserializeApiResults (x: string) =
+    match x with
+    | "{}" -> Ok Array.empty
+    | ValueString x ->
+        try
+            System.Text.Json.JsonSerializer.Deserialize<ApiResultRaw []>(json = x)
+            |> Ok
+        with ex ->
+            Error(ex,x)
+    | x ->
+        let argEx = ArgumentOutOfRangeException "x"
+        Error (argEx :> exn, x)

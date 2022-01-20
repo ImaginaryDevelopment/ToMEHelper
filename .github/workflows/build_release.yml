@@ -4,8 +4,6 @@ on:
     inputs:
       targetv:
         description: Release version number
-      email:
-        description: git email
 
 jobs:
   build:
@@ -34,6 +32,8 @@ jobs:
       env:
         # Work around https://github.com/actions/setup-dotnet/issues/29
         DOTNET_ROOT: ${{ runner.tool_cache }}/dncs/${{ matrix.dotnet }}/x64
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NUGET_TOKEN:  ${{ secrets.NUGET_TOKEN }}
         CI: true
     # https://stackoverflow.com/questions/57921401/push-to-origin-from-github-action/58393457#58393457
     - name: Check for modified files

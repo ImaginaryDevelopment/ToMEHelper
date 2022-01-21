@@ -60,17 +60,55 @@ let findChars httpclient characterFilter pagingOpt =
     let path = getCharacterFindPath characterFilter pagingOpt
     HttpClient.getStringAsync httpclient path
 
-// handling automatic page walking
-let findCharsAllPages httpclient characterFilter =
-    Seq.initInfinite(fun i ->
-        match i with
-        | 0 -> None
-        | i -> Some {
-            Page = Some i
+let findAllCharsAsync startPage pagingOpt httpclient characterFilter =
+    let startPage = startPage |> Option.defaultValue 0
+    let paging =
+        pagingOpt
+        |> Option.defaultValue {
+            Page = Some startPage
             Max = None
             Order = null
         }
-        |> findChars httpclient characterFilter
+    Seq.initInfinite(fun pg ->
+        let pg = pg + startPage
+        async {
+            let paging = {paging with Page = Some pg}
+            let! result =
+                findChars httpclient characterFilter (Some paging)
+                |> Async.AwaitTask
+            return deserializeApiResults result
+        }
+    )
+
+
+let findAllChars httpclient characterFilter pagingOpt =
+    // keep taking until 0 results come back
+    let pg =
+        (pagingOpt)
+        |> Option.defaultValue {
+            Page = Some 0
+            Max = None
+            Order = null
+        }
+    pagingOpt
+    |> Option.bind(fun p -> p.Page)
+    |> Option.defaultValue 0
+    |> Ok
+    |> Seq.unfold(fun (page:Result<int,unit>) ->
+        match page with
+        // error is being used as stop, not necessarily a real error
+        | Error () -> None
+        | Ok page ->
+            let r =
+                findChars httpclient characterFilter (Some {pg with Page = Some page})
+                |> Async.AwaitTask
+                |> Async.RunSynchronously
+                |> deserializeApiResults
+            match r with
+            | Error (e,msg) ->
+                Some(Error(e,msg),Error())
+            | Ok v ->
+                Some(Ok v, if v.Length > 0 then Ok (page + 1) else Error ())
     )
 
 let dumpFindCharsValidation httpclient (logger:ToMELogger) extraDebug characterFilter pageOpt =
@@ -141,7 +179,6 @@ let (|JsonExPath|_|) =
         v.Split(".")
         |> Some
     | _ -> None
-
 
 let gatherDeserializeApiCharacterDiag (logger:ToMELogger) (x:string) (je:System.Text.Json.JsonElement) (ex:exn) =
     logger.Dump(ex,"could not deserialize")

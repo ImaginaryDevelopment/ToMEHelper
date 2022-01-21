@@ -1,4 +1,8 @@
 name: Release
+# set this up as a tag thing instead
+# https://github.com/ionide/KeepAChangelog/blob/main/.github/workflows/publish.yml#L4-L6
+# https://github.com/ionide/KeepAChangelog/blob/main/.github/workflows/publish.yml#L34-L39
+
 on:
   workflow_dispatch:
     inputs:

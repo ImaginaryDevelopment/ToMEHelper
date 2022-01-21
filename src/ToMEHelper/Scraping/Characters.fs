@@ -2,6 +2,7 @@
 namespace ToMEHelper.Scraping.Characters
 
 open ToMEHelper.BHelpers
+open ToMEHelper.BHelpers.StringHelpers
 
 type CDict<'tKey,'tValue> = System.Collections.Generic.Dictionary<'tKey, 'tValue>
 
@@ -147,6 +148,33 @@ module RawApiCharacters =
         Equipment: CDict<string,obj[]>
         Inventory: InventoryItem[]
     }
+    let (|TalentVal|_|) =
+        function
+        | BeforeOrSelf "/" (Int v) -> Some v
+        | _ -> None
+    // should be removing from x.Talent[y].List 0 pt talents too
+    let removeEmptyTalents (x:CharacterSheet) =
+        let isNoPt (tx:TalentX)=
+            match tx.Val with
+            | TalentVal v -> v = 0
+            | _ -> false
+
+        let next =
+            x.Talents
+            |> Seq.map (|KeyValue|)
+            |> Seq.filter(fun (_,v) ->
+                // float v.Mastery > 1.3 // assume higher mastery means invested, but what about adept?
+                (v.List |> Array.exists(isNoPt>>not))
+            )
+            |> Seq.map(fun (k,v) ->
+                if v.List |> Seq.exists(fun l -> match l.Val with | TalentVal v -> v = 0 | _ -> false) then
+                    k, {v with List = v.List |> Array.filter (isNoPt >> not)}
+                else k,v
+            )
+            |> Seq.map System.Collections.Generic.KeyValuePair
+            |> CDict<_,_>
+        {x with Talents = next }
+
 module CharacterApi =
     open RawApiCharacters
     /// strips questionable/problematic api output issues before attempting

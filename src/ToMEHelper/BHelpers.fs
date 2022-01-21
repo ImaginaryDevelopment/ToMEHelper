@@ -56,6 +56,8 @@ let tryAfter delim =
 
 let before (delim: string) (x: string) = x.[0..x.IndexOf delim - 1]
 let after (delim: string) (x: string) = x.[x.IndexOf delim + delim.Length..]
+let beforeOrSelf delim x = tryBefore delim x |> Option.defaultValue x
+let afterOrSelf delim x = tryAfter delim x |> Option.defaultValue x
 
 // f -> true starts a new bucket
 let chunkBy f x =
@@ -78,7 +80,9 @@ module StringHelpers =
         | _ -> None
 
     let (|Before|_|) delim = tryBefore delim
+    let (|BeforeOrSelf|) delim = beforeOrSelf delim
     let (|After|_|) delim = tryAfter delim
+    let (|AfterOrSelf|) delim = afterOrSelf delim
     let (|Int|_|) = tryParse System.Int32.TryParse
 
     let tryParseDU<'t> (x: string) =
